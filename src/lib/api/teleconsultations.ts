@@ -1,7 +1,7 @@
 import { supabase } from '../supabase';
 import type { Database } from '../types/supabase';
 
-type Teleconsultation = Database['public']['Tables']['teleconsultations']['Row'];
+// type Teleconsultation = Database['public']['Tables']['teleconsultations']['Row'];
 type TeleconsultationInsert = Database['public']['Tables']['teleconsultations']['Insert'];
 type TeleconsultationUpdate = Database['public']['Tables']['teleconsultations']['Update'];
 
