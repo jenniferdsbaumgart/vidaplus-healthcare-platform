@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PrescriptionForm from '../../components/forms/PrescriptionForm';
 import { ChevronLeft } from 'lucide-react';
@@ -43,13 +42,14 @@ const NewPrescriptionPage = () => {
           <p className="text-gray-500">Emita uma nova prescrição médica digital</p>
         </div>
       </div>
-
-      <div className="max-w-3xl">
-        <PrescriptionForm
-          patientId={patientId}
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-[900px] max-w-4xl">
+          <PrescriptionForm
+            patientId={patientId}
+            onSuccess={handleSuccess}
+            onCancel={handleCancel}
+          />
+        </div>
       </div>
     </div>
   );
