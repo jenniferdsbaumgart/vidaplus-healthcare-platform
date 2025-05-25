@@ -17,6 +17,7 @@ import ProfilePage from './pages/profile/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
 import AppointmentSchedulePage from './pages/appointments/AppointmentSchedulePage';
 import ReportsPage from './pages/reports/ReportsPage';
+import NewExamPage from './pages/exams/NewExamPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -46,6 +47,7 @@ function App() {
             <Route path="patients/new" element={<NewPatientPage />} />
             <Route path="patients/:id" element={<PatientDetailsPage />} />
             <Route path="patients/:patientId/prescriptions/new" element={<NewPrescriptionPage />} />
+            <Route path="patients/:patientId/exams/new" element={<NewExamPage />} />
             <Route path="staff" element={<StaffListPage />} />
             <Route path="staff/new" element={<NewStaffPage />} />
             <Route path="staff/:id" element={<StaffDetailsPage />} />

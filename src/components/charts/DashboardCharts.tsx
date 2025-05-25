@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +11,7 @@ import {
   LineElement,
   Filler,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -76,16 +75,12 @@ export const TendenciaTemporalChart = () => {
 // Comparação por Categoria Chart
 export const ComparacaoCategoriaChart = () => {
   const data = {
-    labels: ['Clínica Geral', 'Pediatria', 'Cardiologia', 'Ortopedia', 'Ginecologia'],
+    labels: ['Clínica Geral', 'Reumatologia', 'Cardiologia', 'Psiquiatria', 'Ginecologia'],
     datasets: [
       {
-        data: [300, 250, 200, 150, 100],
+        data: [300, 220, 140, 260, 100],
         backgroundColor: [
           'rgba(6, 174, 158, 0.8)',
-          'rgba(59, 130, 246, 0.8)',
-          'rgba(139, 92, 246, 0.8)',
-          'rgba(236, 72, 153, 0.8)',
-          'rgba(245, 158, 11, 0.8)',
         ],
         borderWidth: 0,
       },
@@ -97,14 +92,20 @@ export const ComparacaoCategoriaChart = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'right' as const,
+        display: false,
       },
     },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 400,
+      }
+    }
   };
 
   return (
     <div className="h-[300px]">
-      <Line data={data} options={options} />
+      <Bar data={data} options={options} />
     </div>
   );
 };
