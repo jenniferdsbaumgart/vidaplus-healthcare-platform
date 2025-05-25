@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PatientForm from '../../components/forms/PatientForm';
 import { ChevronLeft } from 'lucide-react';
