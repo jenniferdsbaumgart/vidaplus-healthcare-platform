@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import {
   Phone,
   Mail,
-  MapPin,
   Calendar,
   Clock,
   FileText,
@@ -18,7 +17,6 @@ import {
   GraduationCap,
   Briefcase,
   CalendarRange,
-  User,
   BarChart,
   Activity,
   Video
@@ -131,11 +129,24 @@ const StaffDetailsPage = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-full bg-primary text-white flex items-center justify-center mb-4">
-                  <span className="text-2xl font-semibold">
-                    {staff.full_name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
+                <div className="flex-shrink-0 mr-4">
+                    {staff.avatar ? (
+                      <img
+                        src={staff.avatar}
+                        alt={staff.full_name}
+                        className="w-14 h-14 rounded-full object-cover border"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center">
+                        <span className="text-lg font-semibold">
+                          {staff.full_name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 <h3 className="text-xl font-semibold text-gray-900">{staff.full_name}</h3>
                 <p className="text-gray-500">{getRoleDisplay(staff.role)}</p>
                 <div className="mt-2">
@@ -253,21 +264,21 @@ const StaffDetailsPage = () => {
             <CardContent>
               <div className="space-y-4">
                 <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-blue-500"></div>
+                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-800"></div>
                   <p className="text-sm font-medium text-gray-900">Consulta realizada</p>
                   <p className="text-xs text-gray-500 mt-1">Atendimento ao paciente João Silva</p>
                   <p className="text-xs text-gray-400 mt-1">Há 35 minutos</p>
                 </div>
                 
                 <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-green-500"></div>
+                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-600"></div>
                   <p className="text-sm font-medium text-gray-900">Prescrição emitida</p>
                   <p className="text-xs text-gray-500 mt-1">Medicação prescrita para Maria Santos</p>
                   <p className="text-xs text-gray-400 mt-1">Há 2 horas</p>
                 </div>
                 
                 <div className="relative pl-6">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-purple-500"></div>
+                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-500"></div>
                   <p className="text-sm font-medium text-gray-900">Exame solicitado</p>
                   <p className="text-xs text-gray-500 mt-1">Hemograma completo para Pedro Oliveira</p>
                   <p className="text-xs text-gray-400 mt-1">Há 4 horas</p>
@@ -357,6 +368,11 @@ const StaffDetailsPage = () => {
                 </div>
               </div>
             </CardContent>
+            <CardFooter className="flex justify-end">
+              <Button variant="outline" size="sm" leftIcon={<ChevronLeft className="h-4 w-4" />}>
+                Ver Todos
+              </Button>
+            </CardFooter>
           </Card>
         </div>
       </div>
