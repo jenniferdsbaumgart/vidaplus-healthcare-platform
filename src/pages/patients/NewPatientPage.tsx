@@ -1,19 +1,19 @@
-import { useNavigate } from 'react-router-dom';
-import PatientForm from '../../components/forms/PatientForm';
-import { ChevronLeft } from 'lucide-react';
-import Button from '../../components/ui/Button';
+import { useNavigate } from "react-router-dom";
+import PatientForm from "../../components/forms/PatientForm";
+import { ChevronLeft } from "lucide-react";
+import Button from "../../components/ui/Button";
 
 const NewPatientPage = () => {
   const navigate = useNavigate();
-  
+
   const handleSuccess = () => {
-    navigate('/patients');
+    navigate("/patients");
   };
-  
+
   const handleCancel = () => {
-    navigate('/patients');
+    navigate("/patients");
   };
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -30,12 +30,10 @@ const NewPatientPage = () => {
           <p className="text-gray-500">Cadastre um novo paciente no sistema</p>
         </div>
       </div>
-      
-      <div className="max-w-2xl">
-        <PatientForm 
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-[900px] max-w-4xl">
+          <PatientForm onSuccess={handleSuccess} onCancel={handleCancel} />
+        </div>
       </div>
     </div>
   );
