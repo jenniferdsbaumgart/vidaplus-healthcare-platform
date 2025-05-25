@@ -461,6 +461,7 @@ const PatientDetailsPage = () => {
                 variant="outline"
                 fullWidth
                 leftIcon={<Clipboard className="h-4 w-4" />}
+                onClick={() => navigate(`/patients/${patient.id}/exams/new`)}
               >
                 Solicitar Novo Exame
               </Button>
