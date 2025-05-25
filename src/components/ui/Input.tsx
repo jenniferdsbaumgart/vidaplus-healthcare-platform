@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     
     const baseInputStyles = "h-11 px-3 py-2 block rounded-lg border-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm";
     const errorInputStyles = "border-error-300 text-error-900 placeholder-error-300 focus:border-error-500 focus:ring-error-500";
-    const defaultInputStyles = "border-gray-200 focus:border-primary-500 focus:ring-primary-500";
+    const defaultInputStyles = "border-gray-200 focus:border-accent-500 focus:ring-accent-500";
     const iconPaddingLeft = leftIcon ? "pl-10" : "";
     const iconPaddingRight = rightIcon ? "pr-10" : "";
     const widthStyles = fullWidth ? "w-full" : "w-80";

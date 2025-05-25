@@ -36,7 +36,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             'block rounded-lg border-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 sm:text-sm',
             error
               ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-              : 'border-gray-200 focus:border-primary focus:ring-primary',
+              : 'border-gray-200 focus:border-accent focus:ring-accent',
             fullWidth ? 'w-full' : 'w-80',
             'p-2.5',
             className

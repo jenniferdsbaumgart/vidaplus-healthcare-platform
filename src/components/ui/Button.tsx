@@ -31,14 +31,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = "inline-flex items-center justify-center font-medium transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
     
     const variantStyles = {
-      primary: "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500",
+      primary: "bg-teal-900 text-white hover:bg-teal-700 focus:ring-teal-500",
       secondary: "bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-500",
       accent: "bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-500",
       success: "bg-success-500 text-white hover:bg-success-600 focus:ring-success-500",
       warning: "bg-warning-500 text-white hover:bg-warning-600 focus:ring-warning-500",
       error: "bg-error-500 text-white hover:bg-error-600 focus:ring-error-500",
-      outline: "border-2 border-primary-500 text-primary-500 hover:bg-primary-50 focus:ring-primary-500",
-      ghost: "text-primary-500 hover:bg-primary-50 focus:ring-primary-500",
+      outline: "border-2 border-teal-700 text-teal-700 hover:bg-teal-50 focus:ring-teal-500",
+      ghost: "text-gray-600 hover:bg-gray-200 focus:ring-accent-500",
     };
     
     const sizeStyles = {
