@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -149,7 +149,7 @@ const PatientListPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Link 
                         to={`/patients/${patient.id}`} 
-                        className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                        className="text-teal-600 hover:text-teal-800 hover:underline font-medium"
                       >
                         {patient.full_name}
                       </Link>
@@ -169,7 +169,7 @@ const PatientListPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link 
                         to={`/patients/${patient.id}`} 
-                        className="text-blue-600 hover:text-blue-800 hover:underline"
+                        className="text-teal-700 hover:text-teal-900 hover:underline"
                       >
                         Detalhes
                       </Link>
