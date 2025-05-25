@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import TeleconsultationForm from '../../components/forms/TeleconsultationForm';
 import { ChevronLeft } from 'lucide-react';
@@ -28,15 +27,17 @@ const NewTeleconsultationPage = () => {
         </Button>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Nova Teleconsulta</h2>
-          <p className="text-gray-500">Agende uma nova teleconsulta</p>
+          <p className="text-gray-400">Agende uma nova teleconsulta</p>
         </div>
       </div>
-      
-      <div className="max-w-2xl">
-        <TeleconsultationForm 
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+
+      <div className="flex flex-col items-center justify-center">
+        <div className="max-w-4xl">
+          <TeleconsultationForm 
+            onSuccess={handleSuccess}
+            onCancel={handleCancel}
+          />
+        </div>
       </div>
     </div>
   );

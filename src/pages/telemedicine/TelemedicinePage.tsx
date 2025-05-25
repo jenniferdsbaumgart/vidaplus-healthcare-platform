@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -206,7 +206,7 @@ const TelemedicinePage = () => {
                       <div className="flex items-center">
                         <Link 
                           to={`/patients/${consultation.patient.id}`}
-                          className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium"
+                          className="text-teal-600 hover:text-teal-800 hover:underline text-sm font-medium"
                         >
                           {consultation.patient.full_name}
                         </Link>
@@ -242,7 +242,7 @@ const TelemedicinePage = () => {
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <div className="p-3 bg-blue-50 rounded-full mb-4">
-                  <Video className="h-10 w-10 text-blue-500" />
+                  <Video className="h-10 w-10 text-teal-600" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhuma teleconsulta encontrada</h3>
                 <p className="text-gray-500 max-w-md mb-6">
