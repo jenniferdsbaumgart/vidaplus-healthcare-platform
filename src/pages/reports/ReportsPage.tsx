@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select';
 import {
-  BarChart as BarChartIcon,
   Download,
-  Calendar,
   Users,
   Activity,
   TrendingUp,
   DollarSign,
-  Clock,
   FileText,
   Filter,
 } from 'lucide-react';
@@ -28,6 +24,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Bar, Line, Pie } from 'react-chartjs-2';
+import { useState } from 'react';
 
 ChartJS.register(
   CategoryScale,
@@ -44,7 +41,7 @@ ChartJS.register(
 
 const ReportsPage = () => {
   const [dateRange, setDateRange] = useState('month');
-  const [department, setDepartment] = useState('all');
+  // const [department, setDepartment] = useState('all');
 
   // Mock data for charts
   const appointmentsData = {
@@ -53,7 +50,7 @@ const ReportsPage = () => {
       {
         label: 'Consultas Presenciais',
         data: [65, 59, 80, 81, 56, 55],
-        backgroundColor: 'rgba(2, 132, 199, 0.8)',
+        backgroundColor: 'rgba(5, 42, 39, 0.8)',
       },
       {
         label: 'Teleconsultas',
@@ -69,11 +66,11 @@ const ReportsPage = () => {
       {
         data: [300, 250, 200, 150, 100],
         backgroundColor: [
-          'rgba(2, 132, 199, 0.8)',
+          'rgba(4, 207, 188, 0.8)',
           'rgba(6, 174, 158, 0.8)',
-          'rgba(139, 92, 246, 0.8)',
-          'rgba(236, 72, 153, 0.8)',
-          'rgba(245, 158, 11, 0.8)',
+          'rgba(5, 42, 39, 0.8)',
+          'rgba(28, 118, 110, 0.8)',
+          'rgba(30, 110, 104, 0.8)',
         ],
       },
     ],
@@ -99,8 +96,8 @@ const ReportsPage = () => {
       {
         label: 'Tempo Médio de Espera (min)',
         data: [25, 20, 22, 18, 15, 17],
-        borderColor: 'rgba(236, 72, 153, 1)',
-        backgroundColor: 'rgba(236, 72, 153, 0.1)',
+        borderColor: 'rgba(5, 42, 39, 0.8)',
+        backgroundColor: 'rgba(5, 42, 39, 0.1)',
         fill: true,
         tension: 0.4,
       },
@@ -237,13 +234,6 @@ const ReportsPage = () => {
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
               <CardTitle>Volume de Consultas</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                leftIcon={<Filter className="h-4 w-4" />}
-              >
-                Filtros
-              </Button>
             </div>
           </CardHeader>
           <CardContent className="p-6">
