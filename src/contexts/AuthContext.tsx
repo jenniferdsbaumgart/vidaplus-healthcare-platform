@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Define the User type
 type User = {
@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextType>({
 const MOCK_USERS = [
   {
     id: '1',
-    name: 'Dr. Ana Silva',
+    name: 'Dr. Ana Beatriz Santos',
     email: 'dr.ana@vidaplus.com',
     password: 'password123', // In a real app, this would be hashed
     role: 'doctor',
@@ -45,7 +45,7 @@ const MOCK_USERS = [
     email: 'admin@vidaplus.com',
     password: 'admin123', // In a real app, this would be hashed
     role: 'admin',
-    avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150',
+    avatar: '/admin-user.png',
   },
 ];
 
@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (matchedUser) {
         // Create a user object without the password
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...userWithoutPassword } = matchedUser;
         
         // Store in state and localStorage
@@ -115,4 +116,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // Custom hook to use the auth context
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

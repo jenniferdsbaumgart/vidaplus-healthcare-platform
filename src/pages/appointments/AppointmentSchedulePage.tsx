@@ -102,7 +102,7 @@ const AppointmentSchedulePage = () => {
 
       // Mock success
       navigate('/appointments/success');
-    } catch (err) {
+    } catch {
       setError('Erro ao agendar consulta. Por favor, tente novamente.');
     }
   };
@@ -315,21 +315,21 @@ const AppointmentSchedulePage = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                    <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-blue-500"></div>
+                    <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-900"></div>
                     <p className="text-sm font-medium text-gray-900">Clínica Geral</p>
                     <p className="text-xs text-gray-500 mt-1">Dr. Ana Beatriz Santos</p>
                     <p className="text-xs text-gray-400 mt-1">15/03/2024</p>
                   </div>
 
                   <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                    <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-green-500"></div>
+                    <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-700"></div>
                     <p className="text-sm font-medium text-gray-900">Cardiologia</p>
                     <p className="text-xs text-gray-500 mt-1">Dr. Carlos Eduardo Silva</p>
                     <p className="text-xs text-gray-400 mt-1">28/02/2024</p>
                   </div>
 
                   <div className="relative pl-6">
-                    <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-purple-500"></div>
+                    <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-600"></div>
                     <p className="text-sm font-medium text-gray-900">Ortopedia</p>
                     <p className="text-xs text-gray-500 mt-1">Dr. Ricardo Oliveira</p>
                     <p className="text-xs text-gray-400 mt-1">10/01/2024</p>
