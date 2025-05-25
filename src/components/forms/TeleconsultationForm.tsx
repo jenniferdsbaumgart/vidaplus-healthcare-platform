@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { teleconsultationSchema } from '../../lib/validations/teleconsultation';
 import { createTeleconsultation } from '../../lib/api/teleconsultations';
 import { getPatients } from '../../lib/api/patients';
-import { getStaff } from '../../lib/api/staff';
+// import { getStaff } from '../../lib/api/staff';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card';
@@ -39,13 +39,22 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [patientsData, staffData] = await Promise.all([
+        const [patientsData] = await Promise.all([
           getPatients(),
-          getStaff(),
         ]);
         
         setPatients(patientsData);
-        setStaff(staffData.filter(s => s.role === 'doctor'));
+        // Use mock data instead of API data
+        const { mockStaff } = await import('../../lib/mock/data');
+        setStaff(
+          mockStaff
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .map((s: any) => ({
+              ...s,
+              specialization: s.specialization ?? '',
+            }))
+            .filter((s: Staff) => s.role === 'doctor')
+        );
         setLoadError(null);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -106,7 +115,7 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
   }
 
   return (
-    <Card>
+    <Card className='w-[800px]'>
       <CardHeader>
         <CardTitle>Agendar Nova Teleconsulta</CardTitle>
       </CardHeader>
@@ -124,7 +133,7 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
               Paciente
             </label>
             <select
-              className="w-full rounded border-2 border-secondary focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
+              className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
               {...register('patient_id')}
             >
               <option value="">Selecione um paciente</option>
@@ -144,7 +153,7 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
               Médico
             </label>
             <select
-              className="w-full rounded border-2 border-secondary focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
+              className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
               {...register('staff_id')}
             >
               <option value="">Selecione um médico</option>
@@ -216,7 +225,7 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
           
           <Button
             type="submit"
-            variant="accent"
+            variant="primary"
             isLoading={isSubmitting}
           >
             Agendar Teleconsulta

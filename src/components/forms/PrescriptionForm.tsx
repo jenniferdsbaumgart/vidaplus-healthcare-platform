@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { prescriptionSchema } from '../../lib/validations/prescription';
@@ -133,7 +133,7 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
                       Instruções Específicas
                     </label>
                     <textarea
-                      className="w-full rounded-lg border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 p-3 text-sm"
+                      className="w-full rounded-lg border-2 border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 p-3 text-sm"
                       rows={2}
                       {...register(`medications.${index}.instructions`)}
                     />
@@ -158,7 +158,7 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
               Instruções Gerais e Observações
             </label>
             <textarea
-              className="w-full rounded-lg border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 p-3 text-sm"
+              className="w-full rounded-lg border-2 border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 p-3 text-sm"
               rows={4}
               {...register('instructions')}
             />

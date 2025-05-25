@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { staffSchema } from '../../lib/validations/staff';
@@ -32,7 +31,17 @@ const StaffForm = ({ onSuccess, onCancel }: StaffFormProps) => {
 
   const onSubmit = async (data: StaffFormData) => {
     try {
-      await createStaff(data);
+      // Map available_schedule to match StaffSchedule[] expected by createStaff
+      const mappedData = {
+        ...data,
+        available_schedule: (data.available_schedule || []).map((item) => ({
+          date: '', // Provide a default or calculated date if needed
+          start_time: item.start || '',
+          end_time: item.end || '',
+          day: item.day,
+        })),
+      };
+      await createStaff(mappedData as never);
       reset();
       onSuccess?.();
     } catch (error) {
