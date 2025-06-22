@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useAuth } from './hooks/useAuth';
+import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages/auth/LoginPage';
 import DashboardLayout from './layouts/DashboardLayout';
 import PatientListPage from './pages/patients/PatientListPage';
