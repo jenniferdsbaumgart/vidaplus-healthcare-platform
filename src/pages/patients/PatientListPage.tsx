@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Ca
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Search, Plus, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
-import { getPatients } from '../../lib/mock/api';
+import { getPatients } from '../../services/patientService';
 import type { Patient } from '../../lib/mock/data';
 
 const PatientListPage = () => {

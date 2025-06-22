@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { staffSchema } from '../../lib/validations/staff';
-import { createStaff } from '../../lib/api/staff';
+import { createStaff } from '../../services/staffService';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card';
@@ -25,7 +25,6 @@ const StaffForm = ({ onSuccess, onCancel }: StaffFormProps) => {
   } = useForm<StaffFormData>({
     resolver: zodResolver(staffSchema),
     defaultValues: {
-      available_schedule: [],
     },
   });
 

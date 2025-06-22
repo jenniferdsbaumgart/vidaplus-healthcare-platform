@@ -1,5 +1,7 @@
+// IMPORTS
+import { useAuth } from "../../hooks/useAuth";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 import {
   Card,
   CardHeader,
@@ -15,15 +17,76 @@ import {
   Calendar,
   Bed,
   ShoppingCart,
-  Video,
   TrendingUp,
   AlertCircle,
   Check,
+  Video,
 } from "lucide-react";
-import { mockPatients } from "../../lib/mock/data";
+import { getPatients } from "../../services/patientService";
 
+// COMPONENT
 const AdminPanelPage = () => {
   const { user } = useAuth();
+  type Appointment = {
+    id: string | number;
+    date: string;
+    time?: string;
+    doctor?: { full_name?: string };
+    type?: string;
+    status?: string;
+    // Removed index signature to fix type error
+  };
+
+  type AppointmentWithExtraInfo = {
+  id: number | string;
+  date: string;
+  time: string;
+  type: string;
+  status: string;
+  doctorName: string;
+  patientName: string;
+  patientId: number | string;
+  doctorId?: number | string;
+};
+
+  type Patient = {
+    id: string | number;
+    full_name: string;
+    appointments?: Appointment[];
+    // Removed [key: string]: any; to avoid using 'any' type
+  };
+
+  const [upcomingAppointments, setUpcomingAppointments] = useState<AppointmentWithExtraInfo[]>([]);
+
+  useEffect(() => {
+    const loadAppointments = async () => {
+      try {
+        const patients: Patient[] = await getPatients();
+
+        const appointments = patients.flatMap((patient: Patient) =>
+          (patient.appointments || []).map((appointment: Appointment) => ({
+            ...appointment,
+            patientName: patient.full_name,
+            patientId: patient.id,
+            doctorName: appointment.doctor?.full_name || "Desconhecido",
+            type: appointment.type || "Consulta",
+            status: appointment.status || "pending",
+            time: appointment.time || "09:00",
+          }))
+        );
+
+        const sortedAppointments = appointments.sort((a, b) =>
+          new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+
+        setUpcomingAppointments(sortedAppointments.slice(0, 10));
+      } catch (err) {
+        console.error("Erro ao carregar consultas:", err);
+      }
+    };
+
+    loadAppointments();
+  }, []);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -91,14 +154,6 @@ const AdminPanelPage = () => {
     },
   ];
 
-  const upcomingAppointments = mockPatients.flatMap((patient) =>
-  (patient.appointments || []).map((appointment) => ({
-    ...appointment,
-    patientName: patient.full_name,
-    patientId: patient.id,
-  }))
-);
-
   return (
     <div className="space-y-6">
       <div>
@@ -106,11 +161,11 @@ const AdminPanelPage = () => {
           {getGreeting()}, {user?.name}
         </h1>
         <p className="text-gray-500 mt-1">
-          Bem-vindo ao painel administrativo do Sistema de Gestão Hospitalar
-          VidaPlus
+          Bem-vindo ao painel administrativo do Sistema de Gestão Hospitalar VidaPlus
         </p>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsData.map((stat, index) => (
           <Link key={index} to={stat.link} className="block">
@@ -152,11 +207,13 @@ const AdminPanelPage = () => {
         ))}
       </div>
 
+      {/* Tabela + gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* Consultas */}
           <Card>
             <CardHeader className="border-b">
-              <CardTitle>Consultas de Hoje</CardTitle>
+              <CardTitle>Próximas Consultas</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -181,12 +238,7 @@ const AdminPanelPage = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {(user?.role === "doctor"
-                      ? upcomingAppointments.filter(
-                          (a) => a.doctorId === user.id
-                        )
-                      : upcomingAppointments
-                    ).map((appointment) => (
+                    {upcomingAppointments.map((appointment) => (
                       <tr key={appointment.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                           {appointment.time}
@@ -203,18 +255,8 @@ const AdminPanelPage = () => {
                           {appointment.doctorName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              appointment.type === "Telemedicina"
-                                ? "bg-blue-100 text-blue-800"
-                                : appointment.type === "Exame"
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-green-100 text-green-800"
-                            }`}
-                          >
-                            {appointment.type === "Telemedicina" && (
-                              <Video className="h-3 w-3 mr-1" />
-                            )}
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <Video className="h-3 w-3 mr-1" />
                             {appointment.type}
                           </span>
                         </td>
@@ -252,6 +294,7 @@ const AdminPanelPage = () => {
             </CardContent>
           </Card>
 
+          {/* GRÁFICOS */}
           {user?.role !== "doctor" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
@@ -262,6 +305,7 @@ const AdminPanelPage = () => {
                   <TendenciaTemporalChart />
                 </CardContent>
               </Card>
+
               <Card>
                 <CardHeader className="border-b">
                   <CardTitle>Consultas por Especialidade</CardTitle>
@@ -274,6 +318,7 @@ const AdminPanelPage = () => {
           )}
         </div>
 
+        {/* NECESSITA ATENÇÃO */}
         <div className="space-y-6">
           <Card>
             <CardHeader className="border-b">
@@ -300,68 +345,6 @@ const AdminPanelPage = () => {
                     </div>
                   </Link>
                 ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="border-b">
-              <CardTitle>Atividade Recente</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4 py-2">
-                <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-900"></div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Novo paciente registrado
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Maria Silva foi registrada no sistema
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">Há 35 minutos</p>
-                </div>
-
-                <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-700"></div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Consulta concluída
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Dr. Ana finalizou consulta com João Santos
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">Há 1 hora</p>
-                </div>
-
-                <div className="relative pl-6 pb-4 border-l-2 border-gray-200">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-600"></div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Medicamentos atualizados
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    12 novos itens adicionados ao inventário
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">Há 3 horas</p>
-                </div>
-
-                <div className="relative pl-6">
-                  <div className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-teal-500"></div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Agendamento modificado
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    A consulta de Carlos Pereira foi remarcada
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">Há 5 horas</p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t mt-4">
-                <Link
-                  to="/activity"
-                  className="text-teal-600 hover:text-teal-800 hover:underline text-sm font-medium"
-                >
-                  Ver todo o histórico de atividades →
-                </Link>
               </div>
             </CardContent>
           </Card>

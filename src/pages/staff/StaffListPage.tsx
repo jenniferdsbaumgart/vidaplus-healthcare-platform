@@ -9,7 +9,7 @@ import {
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import { Search, Plus, Filter } from "lucide-react";
-import { getStaff } from "../../lib/mock/api";
+import { getStaff } from "../../services/staffService";
 import type { Staff } from "../../lib/mock/data";
 
 const StaffListPage = () => {

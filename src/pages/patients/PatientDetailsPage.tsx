@@ -18,7 +18,7 @@ import {
   Clipboard,
   Plus,
 } from "lucide-react";
-import { getPatientById } from "../../lib/mock/api";
+import { getPatientById } from "../../services/patientService";
 import type { Patient } from "../../lib/mock/data";
 
 type Medication = {
@@ -28,6 +28,7 @@ type Medication = {
 
 const PatientDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
+  const numericId = id ? Number(id) : undefined;
   const [patient, setPatient] = useState<Patient | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [medications, setMedications] = useState<Medication[]>([]);
@@ -37,9 +38,9 @@ const PatientDetailsPage = () => {
 
   useEffect(() => {
     const loadPatient = async () => {
-      if (id) {
+      if (numericId) {
         setIsLoading(true);
-        const patientData = await getPatientById(id);
+        const patientData = await getPatientById(numericId);
         setPatient(patientData);
         setMedications(patientData?.medications || []);
         setIsLoading(false);
@@ -47,7 +48,7 @@ const PatientDetailsPage = () => {
     };
 
     loadPatient();
-  }, [id]);
+  }, [id, numericId]);
 
   const handleAddMedication = () => {
     const trimmedName = newMedication.trim();

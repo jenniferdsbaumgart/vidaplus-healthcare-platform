@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EXAM_TYPES } from "../../lib/mock/data";
+import { examSchema, ExamFormData } from "../../lib/validations/exam";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Select from "../ui/Select";
@@ -13,8 +13,7 @@ import {
   CardFooter,
 } from "../ui/Card";
 import { FileText, AlertTriangle, Calendar } from "lucide-react";
-import { ExamFormData, examSchema } from "../../lib/validations/exam";
-import type { OptionHTMLAttributes } from "react";
+import { EXAM_TYPES } from "../../lib/mock/data";
 
 interface ExamFormProps {
   patientId: string;
@@ -38,11 +37,22 @@ const ExamForm = ({ patientId, onSuccess, onCancel }: ExamFormProps) => {
 
   const onSubmit = async (data: ExamFormData) => {
     try {
-      await createExam(data);
+      const response = await fetch("/api/exams", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao solicitar exame.");
+      }
+
       reset();
       onSuccess?.();
     } catch (error) {
-      console.error("Error creating exam request:", error);
+      console.error("Erro ao solicitar exame:", error);
     }
   };
 
@@ -58,9 +68,7 @@ const ExamForm = ({ patientId, onSuccess, onCancel }: ExamFormProps) => {
             <div className="flex items-start">
               <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 mr-3" />
               <div>
-                <h4 className="text-sm font-medium text-amber-800">
-                  Atenção ao Solicitar
-                </h4>
+                <h4 className="text-sm font-medium text-amber-800">Atenção</h4>
                 <ul className="mt-2 text-sm text-amber-700 space-y-1">
                   <li>• Verifique se o exame é realmente necessário</li>
                   <li>• Considere exames recentes do paciente</li>
@@ -78,19 +86,11 @@ const ExamForm = ({ patientId, onSuccess, onCancel }: ExamFormProps) => {
             fullWidth
           >
             <option value="">Selecione um tipo de exame</option>
-            {EXAM_TYPES.filter(
-              (type): type is string => typeof type === "string" && type !== ""
-            ).map(
-              (
-                type: string
-              ): React.ReactElement<
-                OptionHTMLAttributes<HTMLOptionElement>
-              > => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              )
-            )}
+            {EXAM_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
           </Select>
 
           <Select
@@ -110,7 +110,7 @@ const ExamForm = ({ patientId, onSuccess, onCancel }: ExamFormProps) => {
             label="Motivo do Exame"
             error={errors.reason?.message}
             {...register("reason")}
-            placeholder="Descreva o motivo da solicitação do exame..."
+            placeholder="Descreva o motivo da solicitação..."
             required
             fullWidth
           />
@@ -145,7 +145,7 @@ const ExamForm = ({ patientId, onSuccess, onCancel }: ExamFormProps) => {
               label="Instruções Especiais"
               error={errors.special_instructions?.message}
               {...register("special_instructions")}
-              placeholder="Instruções específicas para a realização do exame..."
+              placeholder="Instruções específicas para o exame..."
               fullWidth
               optional
             />
@@ -178,29 +178,4 @@ const ExamForm = ({ patientId, onSuccess, onCancel }: ExamFormProps) => {
   );
 };
 
-async function createExam(data: {
-    patient_id: string;
-    exam_type: string;
-    urgency: "low" | "medium" | "high";
-    reason: string;
-    fasting_required: boolean;
-    scheduled_date?: string | undefined;
-    special_instructions?: string | undefined;
-}) {
-    const response = await fetch("/api/exams", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        throw new Error("Failed to create exam request");
-    }
-
-    return response.json();
-}
-
 export default ExamForm;
-

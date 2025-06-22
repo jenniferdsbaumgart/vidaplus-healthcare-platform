@@ -2,31 +2,50 @@ import { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { prescriptionSchema } from '../../lib/validations/prescription';
-import { createPrescription } from '../../lib/api/prescriptions';
+import { createPrescription } from '../../services/prescriptionService';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '../ui/Card';
 import { Plus, Minus, FileText, Clock, AlertTriangle } from 'lucide-react';
-import type { Prescription } from '../../lib/types/prescription';
 
 interface PrescriptionFormProps {
-  patientId: string;
+  patientId: number;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
+// Tipagem simplificada apenas para este formulário
+type MedicationInput = {
+  name: string;
+  dosage: string;
+  frequency?: string;
+  duration?: string;
+  instructions?: string;
+};
+
+type FormData = {
+  medications: MedicationInput[];
+  instructions?: string;
+  validity_days: number;
+};
+
 const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Prescription>({
+  } = useForm<FormData>({
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
-      patient_id: patientId,
       medications: [{ name: '', dosage: '', frequency: '', duration: '', instructions: '' }],
       validity_days: 30,
     },
@@ -37,13 +56,42 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
     name: 'medications',
   });
 
-  const onSubmit = async (data: Prescription) => {
+  const getLoggedInDoctorId = () => {
+    // Substitua com lógica real
+    return 1;
+  };
+
+  const getMedicationIdByName = async (name: string) => {
+    const res = await fetch(`/api/medications?name=${encodeURIComponent(name)}`);
+    const meds = await res.json();
+    if (!meds.length) {
+      throw new Error(`Medicamento "${name}" não encontrado`);
+    }
+    return meds[0].id;
+  };
+
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+
     try {
-      setIsSubmitting(true);
-      await createPrescription(data);
+      const doctorId = getLoggedInDoctorId();
+
+      for (const med of data.medications) {
+        const medicationId = await getMedicationIdByName(med.name);
+
+        await createPrescription({
+          patient_id: patientId,
+          doctor_id: doctorId,
+          medication_id: medicationId,
+          dosage: med.dosage,
+          instructions: med.instructions || '',
+        });
+      }
+
       onSuccess?.();
     } catch (error) {
-      console.error('Error creating prescription:', error);
+      console.error('Erro ao criar prescrição:', error);
+      alert('Erro ao criar prescrição. Verifique os dados e tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
@@ -61,9 +109,7 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
             <div className="flex items-start">
               <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 mr-3" />
               <div>
-                <h4 className="text-sm font-medium text-amber-800">
-                  Atenção ao Prescrever
-                </h4>
+                <h4 className="text-sm font-medium text-amber-800">Atenção ao Prescrever</h4>
                 <ul className="mt-2 text-sm text-amber-700 space-y-1">
                   <li>• Verifique cuidadosamente as dosagens e interações</li>
                   <li>• Considere o histórico e alergias do paciente</li>
@@ -73,92 +119,82 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
             </div>
           </div>
 
-          <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-4">Medicamentos</h3>
-            <div className="space-y-4">
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="p-4 border border-gray-200 rounded-lg space-y-4"
-                >
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-sm font-medium text-gray-700">
-                      Medicamento {index + 1}
-                    </h4>
-                    {index > 0 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => remove(index)}
-                        leftIcon={<Minus className="h-4 w-4" />}
-                      >
-                        Remover
-                      </Button>
-                    )}
-                  </div>
+          {fields.map((field, index) => (
+            <div key={field.id} className="p-4 border border-gray-200 rounded-lg space-y-4">
+              <div className="flex justify-between items-center">
+                <h4 className="text-sm font-medium text-gray-700">Medicamento {index + 1}</h4>
+                {index > 0 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => remove(index)}
+                    leftIcon={<Minus className="h-4 w-4" />}
+                  >
+                    Remover
+                  </Button>
+                )}
+              </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label="Nome do Medicamento"
-                      error={errors.medications?.[index]?.name?.message}
-                      {...register(`medications.${index}.name`)}
-                      fullWidth
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label="Nome do Medicamento"
+                  error={errors.medications?.[index]?.name?.message}
+                  {...register(`medications.${index}.name`)}
+                  fullWidth
+                />
 
-                    <Input
-                      label="Dosagem"
-                      error={errors.medications?.[index]?.dosage?.message}
-                      {...register(`medications.${index}.dosage`)}
-                      fullWidth
-                    />
+                <Input
+                  label="Dosagem"
+                  error={errors.medications?.[index]?.dosage?.message}
+                  {...register(`medications.${index}.dosage`)}
+                  fullWidth
+                />
 
-                    <Input
-                      label="Frequência"
-                      error={errors.medications?.[index]?.frequency?.message}
-                      {...register(`medications.${index}.frequency`)}
-                      fullWidth
-                    />
+                <Input
+                  label="Frequência"
+                  {...register(`medications.${index}.frequency`)}
+                  fullWidth
+                />
 
-                    <Input
-                      label="Duração do Tratamento"
-                      error={errors.medications?.[index]?.duration?.message}
-                      {...register(`medications.${index}.duration`)}
-                      fullWidth
-                    />
-                  </div>
+                <Input
+                  label="Duração"
+                  {...register(`medications.${index}.duration`)}
+                  fullWidth
+                />
+              </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Instruções Específicas
-                    </label>
-                    <textarea
-                      className="w-full rounded-lg border-2 border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 p-3 text-sm"
-                      rows={2}
-                      {...register(`medications.${index}.instructions`)}
-                    />
-                  </div>
-                </div>
-              ))}
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => append({ name: '', dosage: '', frequency: '', duration: '', instructions: '' })}
-                leftIcon={<Plus className="h-4 w-4" />}
-                fullWidth
-              >
-                Adicionar Medicamento
-              </Button>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Instruções Específicas
+                </label>
+                <textarea
+                  className="w-full rounded-lg border-2 border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent p-3 text-sm"
+                  rows={2}
+                  {...register(`medications.${index}.instructions`)}
+                />
+              </div>
             </div>
-          </div>
+          ))}
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              append({ name: '', dosage: '', frequency: '', duration: '', instructions: '' })
+            }
+            leftIcon={<Plus className="h-4 w-4" />}
+            fullWidth
+          >
+            Adicionar Medicamento
+          </Button>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Instruções Gerais e Observações
+              Instruções Gerais
             </label>
             <textarea
-              className="w-full rounded-lg border-2 border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 p-3 text-sm"
+              className="w-full rounded-lg border-2 border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent p-3 text-sm"
               rows={4}
               {...register('instructions')}
             />
@@ -193,7 +229,6 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
               Cancelar
             </Button>
           )}
-
           <Button
             type="submit"
             variant="primary"
