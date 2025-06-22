@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id                 Int                 @id @default(autoincrement())
+  full_name          String
+  cpf                String              @unique
+  birth_date         DateTime
+  gender             String
+  email              String?
+  phone              String?
+  address            String?
+  avatar             String?
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
+  allergies          Allergy[]
+  appointments       Appointment[]
+  chronicConditions  ChronicCondition[]
+  exams              Exam[]
+  patientMedications PatientMedication[]
+  prescriptions      Prescription[]
+  teleconsultations  Teleconsultation[]
+}
+
+model Staff {
+  id                  Int            @id @default(autoincrement())
+  full_name           String
+  registration_number String         @unique
+  role                Role
+  email               String
+  phone               String?
+  specialization      String?
+  avatar              String?
+  available_schedule  Json?
+  created_at          DateTime       @default(now())
+  updated_at          DateTime       @updatedAt
+  appointments        Appointment[]
+  prescriptions       Prescription[]
+  teleconsultations Teleconsultation[]
+}
+
+model Medication {
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  dosage             String?
+  patientMedications PatientMedication[]
+  prescriptions      Prescription[]
+}
+
+model PatientMedication {
+  patient_id    Int
+  medication_id Int
+  medication    Medication @relation(fields: [medication_id], references: [id], onDelete: Cascade)
+  patient       Patient    @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+
+  @@id([patient_id, medication_id])
+}
+
+model Allergy {
+  id         Int     @id @default(autoincrement())
+  patient_id Int
+  allergy    String
+  patient    Patient @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+}
+
+model ChronicCondition {
+  id         Int     @id @default(autoincrement())
+  patient_id Int
+  condition  String
+  patient    Patient @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+}
+
+model Exam {
+  id         Int      @id @default(autoincrement())
+  patient_id Int
+  name       String
+  date       DateTime
+  result     String?
+  patient    Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  patient_id  Int
+  date        DateTime
+  time        String
+  doctor_id   Int?
+  doctor_name String
+  type        String
+  status      String
+  doctor      Staff?   @relation(fields: [doctor_id], references: [id])
+  patient     Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+}
+
+model Prescription {
+  id            Int        @id @default(autoincrement())
+  patient_id    Int
+  doctor_id     Int?
+  medication_id Int
+  dosage        String?
+  instructions  String?
+  issued_date   DateTime   @default(now())
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  doctor        Staff?     @relation(fields: [doctor_id], references: [id])
+  medication    Medication @relation(fields: [medication_id], references: [id], onDelete: Cascade)
+  patient       Patient    @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?
+  role      Role     @default(doctor)
+}
+
+enum Role {
+  admin
+  doctor
+  nurse
+  technician
+}
+
+model Report {
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Teleconsultation {
+  id         Int      @id @default(autoincrement())
+  patient_id Int
+  doctor_id  Int      // novo campo
+  date       DateTime
+  notes      String?
+  patient    Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
+  doctor     Staff    @relation(fields: [doctor_id], references: [id])
+}
