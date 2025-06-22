@@ -1,0 +1,35 @@
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import { errorHandler } from './middlewares/errorHandler';
+import patientRoutes from './routes/patientRoutes';
+import authRoutes from './routes/authRoutes';
+import appointmentRoutes from './routes/appointmentRoutes';
+import examRoutes from './routes/examRoutes';
+import staffRoutes from './routes/staffRoutes';
+import telemedicineRoutes from './routes/telemedicineRoutes';
+import prescriptionsRoutes from './routes/prescriptionsRoutes';
+
+const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:5174', // Porta onde o Vite está rodando
+}));
+app.use(express.json());
+app.use(morgan('dev'));
+
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+app.use(limiter);
+
+app.use('/api/auth', authRoutes);
+app.use('/api/patients', patientRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/prescriptions', prescriptionsRoutes);
+app.use('/api/exams', examRoutes);
+app.use('/api/staff', staffRoutes);
+app.use('/api/telemedicine', telemedicineRoutes);
+
+app.use(errorHandler);
+
+export default app;
