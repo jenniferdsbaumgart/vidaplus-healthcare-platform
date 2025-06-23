@@ -1,27 +1,36 @@
-import { NextFunction, Request, Response } from 'express';
-import { prisma } from '../lib/prisma';
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../lib/prisma";
 
-export const getAllTelemedicine = async (req: Request, res: Response): Promise<void> => {
+export const getAllTelemedicine = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const telemedicine = await prisma.teleconsultation.findMany({
     include: {
       patient: true,
       doctor: true,
     },
     orderBy: {
-      date: 'asc',
+      date: "asc",
     },
   });
 
   res.json(telemedicine);
 };
 
-export const getTelemedicineById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getTelemedicineById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const id = Number(req.params.id);
-    const telemedicine = await prisma.teleconsultation.findUnique({ where: { id } });
+    const telemedicine = await prisma.teleconsultation.findUnique({
+      where: { id },
+    });
 
     if (!telemedicine) {
-      res.status(404).json({ message: 'Teleconsultation not found' });
+      res.status(404).json({ message: "Teleconsultation not found" });
       return;
     }
 
@@ -31,20 +40,43 @@ export const getTelemedicineById = async (req: Request, res: Response, next: Nex
   }
 };
 
-export const createTelemedicine = async (req: Request, res: Response): Promise<void> => {
-  const data = req.body;
-  const newTelemedicine = await prisma.teleconsultation.create({ data });
+export const createTelemedicine = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { patientId, doctorId, date, notes } = req.body;
+  const newTelemedicine = await prisma.teleconsultation.create({
+    data: {
+      date: new Date(date),
+      notes,
+      patient: {
+        connect: { id: patientId },
+      },
+      doctor: {
+        connect: { id: doctorId },
+      },
+    },
+  });
   res.status(201).json(newTelemedicine);
 };
 
-export const updateTelemedicine = async (req: Request, res: Response): Promise<void> => {
+export const updateTelemedicine = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   const data = req.body;
-  const updated = await prisma.teleconsultation.update({ where: { id: Number(id) }, data });
+  const updated = await prisma.teleconsultation.update({
+    where: { id: Number(id) },
+    data,
+  });
   res.json(updated);
 };
 
-export const deleteTelemedicine = async (req: Request, res: Response): Promise<void> => {
+export const deleteTelemedicine = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   await prisma.teleconsultation.delete({ where: { id: Number(id) } });
   res.status(204).send();

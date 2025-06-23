@@ -10,7 +10,7 @@ export interface Teleconsultation {
     full_name: string;
     birth_date: string;
   };
-  staff: {
+  doctor: {
     id: number;
     full_name: string;
     specialization: string;

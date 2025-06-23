@@ -151,7 +151,7 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
             >
               <option value="">Selecione um paciente</option>
               {patients.map((patient) => (
-                <option key={patient.id} value={String(patient.id)}>
+                <option key={patient.id} value={patient.id}>
                   {patient.full_name}
                 </option>
               ))}
@@ -171,7 +171,7 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
             >
               <option value="">Selecione um médico</option>
               {staff.map((doctor) => (
-                <option key={doctor.id} value={String(doctor.id)}>
+                <option key={doctor.id} value={doctor.id}>
                   {doctor.full_name} - {doctor.specialization}
                 </option>
               ))}
