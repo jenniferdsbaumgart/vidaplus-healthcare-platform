@@ -17,7 +17,7 @@ router.get('/', getAllPatients);
 import { RequestHandler } from 'express';
 
 router.get('/:id', getPatientById as RequestHandler);
-router.post('/', createPatient);
+router.post('/', createPatient as RequestHandler);
 router.put('/:id', updatePatient);
 router.delete('/:id', deletePatient);
 

@@ -39,9 +39,9 @@ const mapFormDataToCreatePatientInput = (formData: PatientFormData) => {
     cpf: formData.cpf,
     birth_date: new Date(formData.birth_date),
     gender: formData.gender,
-    email: formData.email ?? null,
-    phone: formData.phone ?? null,
-    address: formData.address ?? null,
+    email: formData.email || undefined,
+    phone: formData.phone || undefined,
+    address: formData.address || undefined,
   };
 };
 

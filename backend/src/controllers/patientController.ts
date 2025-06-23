@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
+import bcrypt from 'bcrypt';
 
 export const getAllPatients = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -37,31 +38,37 @@ export const getPatientById = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const createPatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const createPatient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { full_name, cpf, birth_date, gender, email, phone } = req.body;
+    const { full_name, cpf, birth_date, gender, email, phone, password } = req.body;
 
-    console.log('[createPatient] req.body:', req.body);
-
-    if (!full_name || !cpf || !birth_date || !gender) {
-      res.status(400).json({ message: 'Campos obrigatórios faltando.' });
-      return;
+    if (!full_name || !cpf || !birth_date || !gender || !email || !password) {
+      return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
     }
 
-    const newPatient = await prisma.patient.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await prisma.user.create({
+      data: {
+        name: full_name,
+        email,
+        password: hashedPassword,
+        role: 'patient'
+      }
+    });
+
+    const patient = await prisma.patient.create({
       data: {
         full_name,
         cpf,
         birth_date: new Date(birth_date),
         gender,
-        ...(email && { email }),
-        ...(phone && { phone })
+        email,
+        phone
       }
     });
 
-    res.status(201).json(newPatient);
+    res.status(201).json(patient);
   } catch (error) {
-    console.error('[createPatient] erro:', error);
     next(error);
   }
 };
