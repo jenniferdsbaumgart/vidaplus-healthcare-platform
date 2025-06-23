@@ -5,7 +5,14 @@ export interface Staff {
   name: string;
   position: string;
   email: string;
-  // Add other staff fields as needed
+  registration_number?: string;
+  specialization?: string;
+  birth_date?: string;
+  gender?: string;
+  phone?: string;
+  address?: string;
+  password?: string;
+  role?: 'doctor' | 'nurse' | 'technician';
 }
 
 export async function getStaff() {
