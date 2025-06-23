@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { useForm } from 'react-hook-form';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
-import { Mail, Lock, AlertCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { useForm } from "react-hook-form";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import { Mail, Lock, AlertCircle } from "lucide-react";
 
 type LoginFormData = {
   email: string;
@@ -16,24 +23,24 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated, isLoading, error } = useAuth();
   const [showCredentials, setShowCredentials] = useState(false);
-  
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors } 
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
   } = useForm<LoginFormData>();
-  
+
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
-  
+
   const onSubmit = async (data: LoginFormData) => {
     await login(data.email, data.password);
   };
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -53,16 +60,20 @@ const LoginPage = () => {
               <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">VidaPlus SGHSS</h1>
-          <p className="text-gray-600 mt-1">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+            VidaPlus SGHSS
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Sistema de Gestão Hospitalar e de Serviços de Saúde
+          </p>
         </div>
-        
+
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Login</CardTitle>
             <CardDescription>Acesse sua conta para continuar</CardDescription>
           </CardHeader>
-          
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <CardContent className="space-y-4">
               {error && (
@@ -71,7 +82,7 @@ const LoginPage = () => {
                   <span className="text-sm text-red-800">{error}</span>
                 </div>
               )}
-              
+
               <Input
                 label="E-mail"
                 type="email"
@@ -79,15 +90,15 @@ const LoginPage = () => {
                 fullWidth
                 error={errors.email?.message}
                 placeholder="seu.email@exemplo.com"
-                {...register('email', { 
-                  required: 'E-mail é obrigatório',
+                {...register("email", {
+                  required: "E-mail é obrigatório",
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: 'Formato de e-mail inválido'
-                  }
+                    message: "Formato de e-mail inválido",
+                  },
                 })}
               />
-              
+
               <Input
                 label="Senha"
                 type="password"
@@ -95,15 +106,15 @@ const LoginPage = () => {
                 fullWidth
                 error={errors.password?.message}
                 placeholder="Sua senha"
-                {...register('password', { 
-                  required: 'Senha é obrigatória',
+                {...register("password", {
+                  required: "Senha é obrigatória",
                   minLength: {
                     value: 6,
-                    message: 'A senha deve ter pelo menos 6 caracteres'
-                  }
+                    message: "A senha deve ter pelo menos 6 caracteres",
+                  },
                 })}
               />
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input
@@ -112,18 +123,24 @@ const LoginPage = () => {
                     type="checkbox"
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 block text-sm text-gray-700"
+                  >
                     Lembrar-me
                   </label>
                 </div>
-                
+
                 <div className="text-sm">
-                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                  <a
+                    href="#"
+                    className="font-medium text-blue-600 hover:text-blue-500"
+                  >
                     Esqueceu a senha?
                   </a>
                 </div>
               </div>
-              
+
               {/* Credentials help section */}
               <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
                 <button
@@ -132,19 +149,23 @@ const LoginPage = () => {
                   onClick={() => setShowCredentials(!showCredentials)}
                 >
                   <span>Mostrar credenciais de demonstração</span>
-                  <span className="text-xs">{showCredentials ? '▲' : '▼'}</span>
+                  <span className="text-xs">{showCredentials ? "▲" : "▼"}</span>
                 </button>
-                
+
                 {showCredentials && (
                   <div className="mt-2 text-sm">
                     <p className="font-medium mb-1">Credenciais de Teste:</p>
-                    <p><strong>Admin:</strong> admin@vidaplus.com / admin123</p>
-                    <p><strong>Médico:</strong> dr.ana@vidaplus.com / password123</p>
+                    <p>
+                      <strong>Admin:</strong> admin@vidaplus.com / admin123
+                    </p>
+                    <p>
+                      <strong>Médico:</strong> dr.ana@vidaplus.com / password123
+                    </p>
                   </div>
                 )}
               </div>
             </CardContent>
-            
+
             <CardFooter>
               <Button
                 type="submit"
@@ -153,6 +174,15 @@ const LoginPage = () => {
                 fullWidth
               >
                 Entrar
+              </Button>
+              <Button
+              className="mt-2"
+                type="button"
+                variant="outline"
+                fullWidth
+                onClick={() => navigate("/signup")}
+              >
+                Cadastre-se
               </Button>
             </CardFooter>
           </form>

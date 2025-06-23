@@ -14,7 +14,8 @@ import prescriptionsRoutes from './routes/prescriptionsRoutes';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5174', // Porta onde o Vite está rodando
+  origin: 'http://localhost:5173', // Porta onde o Vite está rodando
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 app.use(express.json());
 app.use(morgan('dev'));

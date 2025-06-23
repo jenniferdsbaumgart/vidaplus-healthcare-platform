@@ -18,6 +18,7 @@ import StaffListPage from '../pages/staff/StaffListPage';
 import NewTeleconsultationPage from '../pages/telemedicine/NewTeleconsultationPage';
 import TelemedicinePage from '../pages/telemedicine/TelemedicinePage';
 import { useAuth } from '../hooks/useAuth'; 
+import SignUpPage from '../pages/auth/SignUpPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -27,6 +28,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
+    <Route path="/signup" element={<SignUpPage />} />
+
+    {/* Protected routes */}
 
     <Route
       path="/"

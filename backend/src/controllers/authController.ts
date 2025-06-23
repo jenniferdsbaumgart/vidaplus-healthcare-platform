@@ -13,7 +13,20 @@ export interface AuthenticatedRequest extends Request {
 
 // Registro de usuário
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
+  const {
+    userType, // 'patient' ou 'staff'
+    full_name,
+    cpf,
+    birth_date,
+    gender,
+    phone,
+    address,
+    email,
+    password,
+    registration_number,
+    specialization,
+    role
+  } = req.body;
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -24,19 +37,46 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
-      data: { name, email, password: hashedPassword }
-    });
-
-    res.status(201).json({
-      message: 'Usuário registrado com sucesso.',
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        name: newUser.name
+    // Cria o usuário base
+    await prisma.user.create({
+      data: {
+        name: full_name,
+        email,
+        password: hashedPassword,
+        role: userType === 'staff' ? role : 'patient'
       }
     });
+
+    if (userType === 'patient') {
+      await prisma.patient.create({
+        data: {
+          full_name,
+          cpf,
+          birth_date: new Date(birth_date),
+          gender,
+          email,
+          phone,
+          address
+        }
+      });
+    } else if (userType === 'staff') {
+      await prisma.staff.create({
+        data: {
+          full_name,
+          registration_number,
+          role,
+          specialization,
+          email,
+          phone,
+          created_at: new Date(),
+          updated_at: new Date()
+        }
+      });
+    }
+
+    res.status(201).json({ message: 'Usuário criado com sucesso.' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Erro ao registrar usuário.', error });
   }
 };
