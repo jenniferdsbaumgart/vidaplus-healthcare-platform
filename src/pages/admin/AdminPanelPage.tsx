@@ -38,25 +38,40 @@ const AdminPanelPage = () => {
   };
 
   type AppointmentWithExtraInfo = {
-  id: number | string;
-  date: string;
-  time: string;
-  type: string;
-  status: string;
-  doctorName: string;
-  patientName: string;
-  patientId: number | string;
-  doctorId?: number | string;
-};
+    id: number | string;
+    date: string;
+    time: string;
+    type: string;
+    status: string;
+    doctorName: string;
+    patientName: string;
+    patientId: number | string;
+    doctorId?: number | string;
+  };
 
   type Patient = {
     id: string | number;
     full_name: string;
     appointments?: Appointment[];
-    // Removed [key: string]: any; to avoid using 'any' type
   };
 
-  const [upcomingAppointments, setUpcomingAppointments] = useState<AppointmentWithExtraInfo[]>([]);
+  const statusColors: Record<string, string> = {
+    Agendado: "bg-blue-100 text-blue-800",
+    Concluído: "bg-green-100 text-green-800",
+    Pendente: "bg-yellow-100 text-yellow-800",
+    Cancelado: "bg-red-100 text-red-800",
+    OutroStatus: "bg-purple-100 text-purple-800",
+  };
+
+  const formatTime = (time: string) => {
+    if (!time) return "";
+    const [hour, minute] = time.split(":");
+    return `${hour.padStart(2, "0")}:${minute.padStart(2, "0")}`;
+  };
+
+  const [upcomingAppointments, setUpcomingAppointments] = useState<
+    AppointmentWithExtraInfo[]
+  >([]);
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -75,8 +90,8 @@ const AdminPanelPage = () => {
           }))
         );
 
-        const sortedAppointments = appointments.sort((a, b) =>
-          new Date(a.date).getTime() - new Date(b.date).getTime()
+        const sortedAppointments = appointments.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         );
 
         setUpcomingAppointments(sortedAppointments.slice(0, 10));
@@ -115,8 +130,8 @@ const AdminPanelPage = () => {
     {
       title: "Leitos Ocupados",
       value: "32/40",
-      change: "80%",
-      trend: "neutral",
+      change: "85%",
+      trend: "up",
       icon: <Bed className="h-6 w-6 text-indigo-500" />,
       link: "/beds",
     },
@@ -161,7 +176,8 @@ const AdminPanelPage = () => {
           {getGreeting()}, {user?.name}
         </h1>
         <p className="text-gray-500 mt-1">
-          Bem-vindo ao painel administrativo do Sistema de Gestão Hospitalar VidaPlus
+          Bem-vindo ao painel administrativo do Sistema de Gestão Hospitalar
+          VidaPlus
         </p>
       </div>
 
@@ -241,7 +257,7 @@ const AdminPanelPage = () => {
                     {upcomingAppointments.map((appointment) => (
                       <tr key={appointment.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                          {appointment.time}
+                          {formatTime(appointment.time)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Link
@@ -255,7 +271,7 @@ const AdminPanelPage = () => {
                           {appointment.doctorName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
                             <Video className="h-3 w-3 mr-1" />
                             {appointment.type}
                           </span>
@@ -263,18 +279,17 @@ const AdminPanelPage = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              appointment.status === "confirmed"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
+                              statusColors[appointment.status] ||
+                              "bg-gray-100 text-gray-800"
                             }`}
                           >
-                            {appointment.status === "confirmed" ? (
+                            {appointment.status === "Concluído" ? (
                               <>
                                 <Check className="h-3 w-3 mr-1" />
-                                Confirmado
+                                Concluído
                               </>
                             ) : (
-                              "Pendente"
+                              appointment.status
                             )}
                           </span>
                         </td>

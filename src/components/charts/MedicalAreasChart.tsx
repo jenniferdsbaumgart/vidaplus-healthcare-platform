@@ -23,6 +23,13 @@ const MedicalAreasChart: React.FC = () => {
           top: "5%",
           left: "center",
         },
+        color: [
+          "#00B7A4",
+          "#028175",
+          "#06AE9E",
+          "#0A4641",
+          "#4C9D98",
+        ],
         series: [
           {
             name: "Especialidade",

@@ -17,7 +17,6 @@ const AppointmentsChart: React.FC = () => {
     if (chartRef.current) {
       const myChart = echarts.init(chartRef.current);
 
-      // There should not be negative values in rawData
       const rawData = [
         [65, 59, 80, 81, 56, 55],
         [28, 48, 40, 19, 86, 27],
@@ -53,6 +52,9 @@ const AppointmentsChart: React.FC = () => {
             data: rawData[sid].map((d, did) =>
               totalData[did] <= 0 ? 0 : d / totalData[did]
             ),
+            itemStyle: {
+              color: sid === 0 ? "#083F3A" : "#028175", // Cor das barras: verde e azul
+            },
           };
         }
       );
@@ -72,8 +74,8 @@ const AppointmentsChart: React.FC = () => {
             "Pediatria",
             "Cardiologia",
             "Ortopedia",
+            "Psiquiatria",
             "Ginecologia",
-            "Outro",
           ],
         },
         series,
@@ -87,7 +89,7 @@ const AppointmentsChart: React.FC = () => {
     }
   }, []);
 
-  return <div ref={chartRef} style={{ width: "600px", height: "400px" }} />;
+  return <div ref={chartRef} style={{ minWidth: "840px", height: "350px" }} />;
 };
 
 export default AppointmentsChart;
