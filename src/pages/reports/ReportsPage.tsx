@@ -23,9 +23,10 @@ import {
   LineElement,
   Filler,
 } from 'chart.js';
-import { Line, Pie } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import { useState } from 'react';
 import AppointmentsChart from '../../components/charts/AppointmentsChart';
+import MedicalAreasChart from '../../components/charts/MedicalAreasChart';
 
 ChartJS.register(
   CategoryScale,
@@ -61,21 +62,21 @@ const ReportsPage = () => {
   //   ],
   // };
 
-  const specialtiesData = {
-    labels: ['Clínica Geral', 'Pediatria', 'Cardiologia', 'Ortopedia', 'Ginecologia'],
-    datasets: [
-      {
-        data: [300, 250, 200, 150, 100],
-        backgroundColor: [
-          'rgba(4, 207, 188, 0.8)',
-          'rgba(6, 174, 158, 0.8)',
-          'rgba(5, 42, 39, 0.8)',
-          'rgba(28, 118, 110, 0.8)',
-          'rgba(30, 110, 104, 0.8)',
-        ],
-      },
-    ],
-  };
+  // const specialtiesData = {
+  //   labels: ['Clínica Geral', 'Pediatria', 'Cardiologia', 'Ortopedia', 'Ginecologia'],
+  //   datasets: [
+  //     {
+  //       data: [300, 250, 200, 150, 100],
+  //       backgroundColor: [
+  //         'rgba(4, 207, 188, 0.8)',
+  //         'rgba(6, 174, 158, 0.8)',
+  //         'rgba(5, 42, 39, 0.8)',
+  //         'rgba(28, 118, 110, 0.8)',
+  //         'rgba(30, 110, 104, 0.8)',
+  //       ],
+  //     },
+  //   ],
+  // };
 
   const patientSatisfactionData = {
     labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
@@ -128,15 +129,15 @@ const ReportsPage = () => {
     },
   };
 
-  const pieChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'right' as const,
-      },
-    },
-  };
+  // const pieChartOptions = {
+  //   responsive: true,
+  //   maintainAspectRatio: false,
+  //   plugins: {
+  //     legend: {
+  //       position: 'right' as const,
+  //     },
+  //   },
+  // };
 
   const stats = [
     {
@@ -261,7 +262,8 @@ const ReportsPage = () => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-80">
-              <Pie data={specialtiesData} options={pieChartOptions} />
+              {/* <Pie data={specialtiesData} options={pieChartOptions} /> */}
+              <MedicalAreasChart />
             </div>
           </CardContent>
         </Card>
