@@ -23,8 +23,9 @@ import {
   LineElement,
   Filler,
 } from 'chart.js';
-import { Bar, Line, Pie } from 'react-chartjs-2';
+import { Line, Pie } from 'react-chartjs-2';
 import { useState } from 'react';
+import AppointmentsChart from '../../components/charts/AppointmentsChart';
 
 ChartJS.register(
   CategoryScale,
@@ -44,21 +45,21 @@ const ReportsPage = () => {
   // const [department, setDepartment] = useState('all');
 
   // Mock data for charts
-  const appointmentsData = {
-    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-    datasets: [
-      {
-        label: 'Consultas Presenciais',
-        data: [65, 59, 80, 81, 56, 55],
-        backgroundColor: 'rgba(5, 42, 39, 0.8)',
-      },
-      {
-        label: 'Teleconsultas',
-        data: [28, 48, 40, 19, 86, 27],
-        backgroundColor: 'rgba(6, 174, 158, 0.8)',
-      },
-    ],
-  };
+  // const appointmentsData = {
+  //   labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+  //   datasets: [
+  //     {
+  //       label: 'Consultas Presenciais',
+  //       data: [65, 59, 80, 81, 56, 55],
+  //       backgroundColor: 'rgba(5, 42, 39, 0.8)',
+  //     },
+  //     {
+  //       label: 'Teleconsultas',
+  //       data: [28, 48, 40, 19, 86, 27],
+  //       backgroundColor: 'rgba(6, 174, 158, 0.8)',
+  //     },
+  //   ],
+  // };
 
   const specialtiesData = {
     labels: ['Clínica Geral', 'Pediatria', 'Cardiologia', 'Ortopedia', 'Ginecologia'],
@@ -238,7 +239,8 @@ const ReportsPage = () => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-80">
-              <Bar data={appointmentsData} options={chartOptions} />
+              {/* <Bar data={appointmentsData} options={chartOptions} /> */}
+              <AppointmentsChart />
             </div>
           </CardContent>
         </Card>
