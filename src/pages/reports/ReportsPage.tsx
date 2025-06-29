@@ -28,12 +28,14 @@ import {
   LineElement,
   Filler,
 } from "chart.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppointmentsChart from "../../components/charts/AppointmentsChart";
 import MedicalAreasChart from "../../components/charts/MedicalAreasChart";
 import MedicalConsultationsChart from "../../components/charts/MedicalConsultationsChart";
 import PatientSatisfactionChart from "../../components/charts/PatientSatisfactionChart";
 import PatientWaitingTimeChart from "../../components/charts/PatientWaitingTimeChart";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -49,102 +51,15 @@ ChartJS.register(
 );
 
 const ReportsPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user || user.role !== "admin") {
+      navigate("/");
+    }
+  }, [user, navigate]);
   const [dateRange, setDateRange] = useState("month");
-  // const [department, setDepartment] = useState('all');
-
-  // Mock data for charts
-  // const appointmentsData = {
-  //   labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-  //   datasets: [
-  //     {
-  //       label: 'Consultas Presenciais',
-  //       data: [65, 59, 80, 81, 56, 55],
-  //       backgroundColor: 'rgba(5, 42, 39, 0.8)',
-  //     },
-  //     {
-  //       label: 'Teleconsultas',
-  //       data: [28, 48, 40, 19, 86, 27],
-  //       backgroundColor: 'rgba(6, 174, 158, 0.8)',
-  //     },
-  //   ],
-  // };
-
-  // const specialtiesData = {
-  //   labels: ['Clínica Geral', 'Pediatria', 'Cardiologia', 'Ortopedia', 'Ginecologia'],
-  //   datasets: [
-  //     {
-  //       data: [300, 250, 200, 150, 100],
-  //       backgroundColor: [
-  //         'rgba(4, 207, 188, 0.8)',
-  //         'rgba(6, 174, 158, 0.8)',
-  //         'rgba(5, 42, 39, 0.8)',
-  //         'rgba(28, 118, 110, 0.8)',
-  //         'rgba(30, 110, 104, 0.8)',
-  //       ],
-  //     },
-  //   ],
-  // };
-
-  // const patientSatisfactionData = {
-  //   labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-  //   datasets: [
-  //     {
-  //       label: 'Satisfação dos Pacientes',
-  //       data: [95, 92, 96, 94, 97, 95],
-  //       borderColor: 'rgba(6, 174, 158, 1)',
-  //       backgroundColor: 'rgba(6, 174, 158, 0.1)',
-  //       fill: true,
-  //       tension: 0.4,
-  //     },
-  //   ],
-  // };
-
-  // const waitingTimeData = {
-  //   labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-  //   datasets: [
-  //     {
-  //       label: 'Tempo Médio de Espera (min)',
-  //       data: [25, 20, 22, 18, 15, 17],
-  //       borderColor: 'rgba(5, 42, 39, 0.8)',
-  //       backgroundColor: 'rgba(5, 42, 39, 0.1)',
-  //       fill: true,
-  //       tension: 0.4,
-  //     },
-  //   ],
-  // };
-
-  // const chartOptions = {
-  //   responsive: true,
-  //   maintainAspectRatio: false,
-  //   plugins: {
-  //     legend: {
-  //       position: 'bottom' as const,
-  //     },
-  //   },
-  //   scales: {
-  //     y: {
-  //       beginAtZero: true,
-  //       grid: {
-  //         color: 'rgba(0, 0, 0, 0.05)',
-  //       },
-  //     },
-  //     x: {
-  //       grid: {
-  //         display: false,
-  //       },
-  //     },
-  //   },
-  // };
-
-  // const pieChartOptions = {
-  //   responsive: true,
-  //   maintainAspectRatio: false,
-  //   plugins: {
-  //     legend: {
-  //       position: 'right' as const,
-  //     },
-  //   },
-  // };
 
   const stats = [
     {
