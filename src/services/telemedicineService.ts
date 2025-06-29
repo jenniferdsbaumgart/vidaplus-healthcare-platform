@@ -17,12 +17,11 @@ export interface Teleconsultation {
   };
 }
 
-export async function getTeleconsultations(date?: string): Promise<Teleconsultation[]> {
-  const response = await api.get('/telemedicine', {
-    params: { date }
-  });
+export const getTeleconsultations = async (date?: string) => {
+  const params = date ? { date } : {};
+  const response = await api.get("/telemedicine", { params });
   return response.data;
-}
+};
 
 export async function createTeleconsultation(data: {
   patientId: number;
