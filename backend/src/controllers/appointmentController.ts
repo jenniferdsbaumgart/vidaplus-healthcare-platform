@@ -1,9 +1,37 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 
-export const getAllAppointments = async (req: Request, res: Response): Promise<void> => {
-  const appointments = await prisma.appointment.findMany();
-  res.json(appointments);
+export const getAllAppointments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const appointments = await prisma.appointment.findMany({
+      include: {
+        patient: {
+          select: {
+            id: true,
+            full_name: true,
+          },
+        },
+        doctor: {
+          select: {
+            id: true,
+            full_name: true,
+            specialization: true,
+          },
+        },
+      },
+      orderBy: {
+        date: "asc",
+      },
+    });
+
+    res.json(appointments);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getAppointmentById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
