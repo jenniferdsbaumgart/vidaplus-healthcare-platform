@@ -21,12 +21,12 @@ import {
   Activity,
   Video
 } from 'lucide-react';
-import { getStaffById } from '../../lib/mock/api';
-import type { Staff } from '../../lib/mock/data';
+import { getStaffById } from '../../services/staffService';
+import { StaffData } from "../../lib/types/staff";
 
 const StaffDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [staff, setStaff] = useState<Staff | null>(null);
+  const [staff, setStaff] = useState<StaffData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   
@@ -34,7 +34,7 @@ const StaffDetailsPage = () => {
     const loadStaff = async () => {
       if (id) {
         setIsLoading(true);
-        const staffData = await getStaffById(id);
+        const staffData = await getStaffById(Number(id));
         setStaff(staffData);
         setIsLoading(false);
       }
