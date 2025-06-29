@@ -1,13 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { api } from '../lib/api/axios';
-
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: 'admin' | 'doctor' | 'nurse' | 'receptionist';
-  avatar?: string;
-};
+import { User } from '../lib/validations/user';
 
 type AuthContextType = {
   user: User | null;
