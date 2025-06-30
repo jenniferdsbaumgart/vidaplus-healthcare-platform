@@ -264,7 +264,13 @@ const DashboardLayout = () => {
                         {user?.name}
                       </p>
                       <p className="text-xs text-gray-500 capitalize">
-                        {user?.role}
+                        {{
+                          admin: "Administrador",
+                          doctor: "Médico",
+                          nurse: "Enfermeiro",
+                          technician: "Técnico",
+                          patient: "Paciente"
+                        }[user?.role?.toLowerCase?.() as string] || user?.role}
                       </p>
                     </div>
                     <ChevronDown className="hidden md:block h-4 w-4 text-gray-500" />
