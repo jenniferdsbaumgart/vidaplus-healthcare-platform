@@ -106,6 +106,25 @@ export const createStaff = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
+export const getStaffByUserId = async (req: Request, res: Response): Promise<void> => {
+  const { userId } = req.params;
+
+  try {
+    const staff = await prisma.staff.findFirst({
+      where: { userId: Number(userId) },
+    });
+
+    if (!staff) {
+      res.status(404).json({ message: "Staff not found" });
+    }
+
+    res.json(staff);
+  } catch (error) {
+    console.error("Error fetching staff by userId:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export const updateStaff = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const data = req.body;

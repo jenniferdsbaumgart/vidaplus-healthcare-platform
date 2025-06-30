@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { api } from '../lib/api/axios';
 import { User } from '../lib/validations/user';
+import { getStaffByUserId } from '../services/staffService'
+import { getPatientByUserId } from '../services/patientService'
 
 type AuthContextType = {
   user: User | null;
@@ -48,6 +50,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Salva token e dados do usuário
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+
+       // 🚨 Se for doctor, busca staffId
+      if (user.role === 'doctor') {
+        const staff = await getStaffByUserId(user.id);
+        if (staff && staff.id) {
+          user.staffId = staff.id;
+        }
+      } else if (user.role === 'patient') {
+        const patient = await getPatientByUserId(user.id)
+        if (patient && patient.id) {
+          user.patientId = patient.id
+        }
+      }
 
       setUser(user);
     } catch (err: unknown) {

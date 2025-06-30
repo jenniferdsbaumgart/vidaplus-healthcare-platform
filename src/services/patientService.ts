@@ -28,6 +28,11 @@ export const getPatientDetails = async (id: number) => {
   return await getPatientById(id);
 };
 
+export async function getPatientByUserId(userId: number) {
+  const res = await api.get(`/patients/user/${userId}`);
+  return res.data;
+}
+
 export const createPatient = async (data: CreatePatientInput) => {
   const response = await api.post('/patients', data);
   return response.data;

@@ -38,6 +38,25 @@ export const getPatientById = async (req: Request, res: Response, next: NextFunc
   }
 };
 
+export const getPatientByUserId = async (req: Request, res: Response): Promise<void> => {
+  const { userId } = req.params;
+
+  try {
+    const patient = await prisma.patient.findFirst({
+      where: { userId: Number(userId) },
+    });
+
+    if (!patient) {
+      res.status(404).json({ message: "patient not found" });
+    }
+
+    res.json(patient);
+  } catch (error) {
+    console.error("Error fetching patient by userId:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 export const createPatient = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { full_name, cpf, birth_date, gender, email, phone, password } = req.body;

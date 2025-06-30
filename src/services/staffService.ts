@@ -25,6 +25,11 @@ export async function getStaffById(id: number) {
   return res.data;
 }
 
+export async function getStaffByUserId(userId: number) {
+  const res = await api.get(`/staff/user/${userId}`);
+  return res.data;
+}
+
 export async function createStaff(staff: Staff) {
   const res = await api.post('/staff', staff);
   return res.data;

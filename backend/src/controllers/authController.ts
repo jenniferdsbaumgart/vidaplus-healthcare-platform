@@ -102,6 +102,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       expiresIn: JWT_EXPIRES_IN
     });
 
+    let staffId = null;
+    if (user.role !== 'patient') {
+      const staff = await prisma.staff.findUnique({ where: { userId: user.id } });
+      staffId = staff ? staff.id : null;
+    }
+
     res.status(200).json({
       message: 'Login bem-sucedido.',
       token,
@@ -110,6 +116,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         name: user.name,
         email: user.email,
         role: user.role,
+        staffId: staffId,
       }
     });
   } catch (error) {
