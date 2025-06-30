@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
-import AdminPanelPage from "../pages/admin/AdminPanelPage";
+import AdminPanelPage from "../pages/main/AdminPanelPage";
 import AppointmentSchedulePage from "../pages/appointments/AppointmentSchedulePage";
 import LoginPage from "../pages/auth/LoginPage";
 import NewExamPage from "../pages/exams/NewExamPage";
@@ -19,6 +19,7 @@ import TelemedicinePage from "../pages/telemedicine/TelemedicinePage";
 import { useAuth } from "../hooks/useAuth";
 import SignUpPage from "../pages/auth/SignUpPage";
 import AppointmentsPage from "../pages/appointments/AppointmentsPage";
+import StaffPanelPage from "../pages/main/StaffPanelPage";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -37,7 +38,16 @@ const AppRoutes = () => {
         path="/"
         element={
           <ProtectedRoute>
-            <DashboardLayout />
+            {/* Render AdminPanelPage or StaffPanelPage based on user role */}
+            {user?.role === "admin" ? (
+              <DashboardLayout />
+            ) : user?.role === "doctor" ||
+              user?.role === "nurse" ||
+              user?.role === "technician" ? (
+              <StaffPanelPage />
+            ) : (
+              <Navigate to="/login" replace />
+            )}
           </ProtectedRoute>
         }
       >
@@ -134,7 +144,10 @@ const AppRoutes = () => {
 
         {/* Appointments */}
         <Route path="appointments" element={<AppointmentsPage />} />
-        <Route path="appointments/schedule" element={<AppointmentSchedulePage />} />
+        <Route
+          path="appointments/schedule"
+          element={<AppointmentSchedulePage />}
+        />
 
         {/* Reports */}
         <Route

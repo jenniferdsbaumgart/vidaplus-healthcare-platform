@@ -24,6 +24,10 @@ export async function getPatientById(id: number) {
   return res.data;
 }
 
+export const getPatientDetails = async (id: number) => {
+  return await getPatientById(id);
+};
+
 export const createPatient = async (data: CreatePatientInput) => {
   const response = await api.post('/patients', data);
   return response.data;

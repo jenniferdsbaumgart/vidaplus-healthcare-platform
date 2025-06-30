@@ -34,7 +34,6 @@ const AdminPanelPage = () => {
     doctor?: { full_name?: string };
     type?: string;
     status?: string;
-    // Removed index signature to fix type error
   };
 
   type AppointmentWithExtraInfo = {

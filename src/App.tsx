@@ -10,7 +10,7 @@ import PatientDetailsPage from './pages/patients/PatientDetailsPage';
 import StaffListPage from './pages/staff/StaffListPage';
 import NewStaffPage from './pages/staff/NewStaffPage';
 import StaffDetailsPage from './pages/staff/StaffDetailsPage';
-import AdminPanelPage from './pages/admin/AdminPanelPage';
+import AdminPanelPage from './pages/main/AdminPanelPage';
 import TelemedicinePage from './pages/telemedicine/TelemedicinePage';
 import NewTeleconsultationPage from './pages/telemedicine/NewTeleconsultationPage';
 import NewPrescriptionPage from './pages/prescriptions/NewPrescriptionPage';
