@@ -20,6 +20,7 @@ import { useAuth } from "../hooks/useAuth";
 import SignUpPage from "../pages/auth/SignUpPage";
 import AppointmentsPage from "../pages/appointments/AppointmentsPage";
 import StaffPanelPage from "../pages/main/StaffPanelPage";
+import PatientPanelPage from "../pages/main/PatientPanelPage";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -38,21 +39,28 @@ const AppRoutes = () => {
         path="/"
         element={
           <ProtectedRoute>
-            {/* Render AdminPanelPage or StaffPanelPage based on user role */}
-            {user?.role === "admin" ? (
-              <DashboardLayout />
-            ) : user?.role === "doctor" ||
-              user?.role === "nurse" ||
-              user?.role === "technician" ? (
-              <StaffPanelPage />
-            ) : (
-              <Navigate to="/login" replace />
-            )}
+            <DashboardLayout />
           </ProtectedRoute>
         }
       >
         <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<AdminPanelPage />} />
+        <Route
+          path="dashboard"
+          element={
+            user?.role === "admin" ? (
+              <AdminPanelPage />
+            ) : user?.role === "doctor" ||
+              user?.role === "nurse" ||
+              user?.role === "technician" ? (
+              <StaffPanelPage />
+            ) : user?.role === "patient" ? (
+              <PatientPanelPage />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
 
         {/* Patients */}
         <Route

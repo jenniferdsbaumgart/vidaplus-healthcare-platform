@@ -7,35 +7,75 @@ import {
   CardTitle,
   CardContent,
 } from "../../components/ui/Card";
-import { Calendar, Stethoscope, ClipboardCheck, FileText, PlusCircle } from "lucide-react";
-import { getPatientDetails } from "../../services/patientService";
+import {
+  Calendar,
+  Stethoscope,
+  ClipboardCheck,
+  FileText,
+  PlusCircle,
+} from "lucide-react";
+import { getPatientById } from "../../services/patientService";
+import { getAppointments } from "../../services/appointmentService";
 import Button from "../../components/ui/Button";
+
+type Exam = {
+  id: number;
+  name: string;
+  result: string;
+};
 
 const PatientPanelPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  interface PatientData {
-    appointments?: { id: string; date: string; time: string; doctor?: { full_name: string } }[];
-    prescriptions?: { id: string; medication: string; dosage: string }[];
-    exams?: { id: string; name: string; result: string }[];
-  }
 
-  const [patientData, setPatientData] = useState<PatientData | null>(null);
+  type Appointment = {
+    id: number;
+    date: string;
+    time: string;
+    doctor_name?: string;
+    patient_id: number;
+  };
+  
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]);
+  
+  type Prescription = {
+    id: number;
+    medication: string;
+    dosage: string;
+  };
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
 
   useEffect(() => {
-    const loadPatient = async () => {
+    const loadPatientData = async () => {
       try {
-        if (user?.id) {
-          const data = await getPatientDetails(user.id);
-          setPatientData(data);
+        if (user?.patientId) {
+          const patientData = await getPatientById(user.patientId);
+
+          setExams(patientData.exams || []);
+          setPrescriptions(patientData.prescriptions || []);
+
+          const allAppointments = await getAppointments();
+          const filteredAppointments = allAppointments.filter(
+            (a: Appointment) => Number(a.patient_id) === Number(user.patientId)
+          );
+
+          setAppointments(filteredAppointments);
         }
       } catch (err) {
         console.error("Erro ao carregar dados do paciente:", err);
       }
     };
 
-    loadPatient();
+    loadPatientData();
   }, [user]);
+
+  const futureAppointments = appointments.filter(
+    (a) => new Date(a.date) >= new Date()
+  );
+  const pastAppointments = appointments.filter(
+    (a) => new Date(a.date) < new Date()
+  );
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -44,17 +84,6 @@ const PatientPanelPage = () => {
     return "Boa noite";
   };
 
-  const upcomingAppointments = patientData?.appointments?.filter(
-    (a) => new Date(a.date) >= new Date()
-  );
-
-  const pastAppointments = patientData?.appointments?.filter(
-    (a) => new Date(a.date) < new Date()
-  );
-
-  const prescriptions = patientData?.prescriptions || [];
-  const exams = patientData?.exams || [];
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -62,7 +91,9 @@ const PatientPanelPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">
             {getGreeting()}, {user?.name}
           </h1>
-          <p className="text-gray-500 mt-1">Bem-vindo ao seu painel VidaPlus</p>
+          <p className="text-gray-500 mt-1">
+            Bem-vindo ao seu painel VidaPlus
+          </p>
         </div>
 
         <Button
@@ -81,9 +112,9 @@ const PatientPanelPage = () => {
             <div className="flex items-center space-x-4">
               <Calendar className="h-8 w-8 text-teal-600" />
               <div>
-                <p className="text-sm text-gray-500">Consultas Agendadas</p>
+                <p className="text-sm text-gray-500">Consultas Futuras</p>
                 <p className="text-xl font-bold text-gray-900">
-                  {upcomingAppointments?.length || 0}
+                  {futureAppointments.length}
                 </p>
               </div>
             </div>
@@ -95,9 +126,9 @@ const PatientPanelPage = () => {
             <div className="flex items-center space-x-4">
               <Stethoscope className="h-8 w-8 text-green-600" />
               <div>
-                <p className="text-sm text-gray-500">Consultas Concluídas</p>
+                <p className="text-sm text-gray-500">Consultas Passadas</p>
                 <p className="text-xl font-bold text-gray-900">
-                  {pastAppointments?.length || 0}
+                  {pastAppointments.length}
                 </p>
               </div>
             </div>
@@ -109,9 +140,9 @@ const PatientPanelPage = () => {
             <div className="flex items-center space-x-4">
               <ClipboardCheck className="h-8 w-8 text-amber-600" />
               <div>
-                <p className="text-sm text-gray-500">Exames Pendentes</p>
+                <p className="text-sm text-gray-500">Exames Realizados</p>
                 <p className="text-xl font-bold text-gray-900">
-                  {exams?.length || 0}
+                  {exams.length}
                 </p>
               </div>
             </div>
@@ -125,18 +156,24 @@ const PatientPanelPage = () => {
           <CardTitle>Próximas Consultas</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          {(upcomingAppointments ?? []).length > 0 ? (
+          {futureAppointments.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hora</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Médico</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Data
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Hora
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Médico
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {(upcomingAppointments ?? []).map((a) => (
+                  {futureAppointments.map((a) => (
                     <tr key={a.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Date(a.date).toLocaleDateString("pt-BR")}
@@ -145,7 +182,7 @@ const PatientPanelPage = () => {
                         {a.time}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {a.doctor?.full_name || "N/A"}
+                        {a.doctor_name || "N/A"}
                       </td>
                     </tr>
                   ))}
@@ -153,7 +190,7 @@ const PatientPanelPage = () => {
               </table>
             </div>
           ) : (
-            <p className="p-4 text-gray-500">Nenhuma consulta agendada.</p>
+            <p className="p-4 text-gray-500">Nenhuma consulta futura.</p>
           )}
         </CardContent>
       </Card>
@@ -169,7 +206,9 @@ const PatientPanelPage = () => {
               {prescriptions.slice(0, 5).map((p) => (
                 <li key={p.id} className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{p.medication}</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {p.medication}
+                    </p>
                     <p className="text-xs text-gray-500">Dose: {p.dosage}</p>
                   </div>
                   <FileText className="h-5 w-5 text-gray-400" />
@@ -193,8 +232,12 @@ const PatientPanelPage = () => {
               {exams.slice(0, 5).map((e) => (
                 <li key={e.id} className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{e.name}</p>
-                    <p className="text-xs text-gray-500">Resultado: {e.result}</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {e.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Resultado: {e.result}
+                    </p>
                   </div>
                   <FileText className="h-5 w-5 text-gray-400" />
                 </li>

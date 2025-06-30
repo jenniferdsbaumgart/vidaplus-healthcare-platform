@@ -5,9 +5,11 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { Search, Video, Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getTeleconsultations, Teleconsultation } from '../../services/telemedicineService';
+import { useAuth } from '../../hooks/useAuth';
 
 const TelemedicinePage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [teleconsultations, setTeleconsultations] = useState<Teleconsultation[]>([]);
@@ -18,7 +20,22 @@ const TelemedicinePage = () => {
     const loadTeleconsultations = async () => {
       try {
         setIsLoading(true);
-        const data = await getTeleconsultations();
+        let data = await getTeleconsultations();
+
+         // Filtra pelo staffId se for staff (ex: doctor, nurse, technician)
+        if (user?.role && user?.role !== 'admin' && user?.role !== 'patient') {
+          data = data.filter(
+            (c: Teleconsultation) => Number(c.doctor.id) === Number(user.staffId)
+          );
+        }
+
+        // Filtra pelo patientId se for paciente
+        if (user?.role === 'patient' && user?.patientId) {
+          data = data.filter(
+            (c: Teleconsultation) => Number(c.patient.id) === Number(user.patientId)
+          );
+        }
+
         setTeleconsultations(data);
         setError(null);
       } catch (err) {
@@ -30,7 +47,7 @@ const TelemedicinePage = () => {
     };
 
     loadTeleconsultations();
-  }, []);
+  }, [user?.role, user?.staffId, user?.patientId]);
 
   const todayConsultations = teleconsultations.filter((c) => {
     const cDate = new Date(c.date);
