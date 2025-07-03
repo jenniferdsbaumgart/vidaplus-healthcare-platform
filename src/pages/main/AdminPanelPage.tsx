@@ -1,4 +1,3 @@
-// IMPORTS
 import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -24,7 +23,6 @@ import {
 } from "lucide-react";
 import { getPatients } from "../../services/patientService";
 
-// COMPONENT
 const AdminPanelPage = () => {
   const { user } = useAuth();
   type Appointment = {
@@ -180,7 +178,7 @@ const AdminPanelPage = () => {
         </p>
       </div>
 
-      {/* Stats */}
+      {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsData.map((stat, index) => (
           <Link key={index} to={stat.link} className="block">
@@ -222,10 +220,9 @@ const AdminPanelPage = () => {
         ))}
       </div>
 
-      {/* Tabela + gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {/* Consultas */}
+          {/* CONSULTAS */}
           <Card>
             <CardHeader className="border-b">
               <CardTitle>Próximas Consultas</CardTitle>

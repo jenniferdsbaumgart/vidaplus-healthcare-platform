@@ -20,7 +20,6 @@ interface PrescriptionFormProps {
   onCancel?: () => void;
 }
 
-// Tipagem simplificada apenas para este formulário
 type MedicationInput = {
   name: string;
   dosage: string;
@@ -57,7 +56,6 @@ const PrescriptionForm = ({ patientId, onSuccess, onCancel }: PrescriptionFormPr
   });
 
   const getLoggedInDoctorId = () => {
-    // Substitua com lógica real
     return 1;
   };
 

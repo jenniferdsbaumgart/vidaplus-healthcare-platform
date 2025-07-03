@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StaffForm from '../../components/forms/StaffForm';
 import { ChevronLeft } from 'lucide-react';
@@ -32,11 +31,13 @@ const NewStaffPage = () => {
         </div>
       </div>
       
-      <div className="max-w-2xl">
-        <StaffForm 
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+      <div className="flex flex-col items-center justify-center">
+        <div className="max-w-6xl">
+          <StaffForm 
+            onSuccess={handleSuccess}
+            onCancel={handleCancel}
+          />
+        </div>
       </div>
     </div>
   );

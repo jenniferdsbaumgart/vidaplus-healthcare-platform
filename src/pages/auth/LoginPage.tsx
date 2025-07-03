@@ -30,7 +30,6 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");

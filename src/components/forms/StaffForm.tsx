@@ -30,11 +30,10 @@ const StaffForm = ({ onSuccess, onCancel }: StaffFormProps) => {
 
   const onSubmit = async (data: StaffFormData) => {
     try {
-      // Map available_schedule to match StaffSchedule[] expected by createStaff
       const mappedData = {
         ...data,
         available_schedule: (data.available_schedule || []).map((item) => ({
-          date: '', // Provide a default or calculated date if needed
+          date: '',
           start_time: item.start || '',
           end_time: item.end || '',
           day: item.day,
@@ -52,7 +51,7 @@ const StaffForm = ({ onSuccess, onCancel }: StaffFormProps) => {
   };
 
   return (
-    <Card>
+    <Card className='w-[800px]'>
       <CardHeader>
         <CardTitle>Cadastrar Novo Profissional</CardTitle>
       </CardHeader>
