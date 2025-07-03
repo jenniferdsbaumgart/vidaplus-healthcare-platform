@@ -14,7 +14,7 @@ import prescriptionsRoutes from './routes/prescriptionsRoutes';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Porta onde o Vite está rodando
+  origin: 'https://vidaplus.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 app.use(express.json());
