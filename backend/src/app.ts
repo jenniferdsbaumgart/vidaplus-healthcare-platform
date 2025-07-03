@@ -12,6 +12,7 @@ import telemedicineRoutes from './routes/telemedicineRoutes';
 import prescriptionsRoutes from './routes/prescriptionsRoutes';
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(cors({
   origin: 'https://vidaplus.vercel.app',
