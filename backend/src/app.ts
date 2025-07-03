@@ -32,6 +32,10 @@ app.use('/api/exams', examRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/telemedicine', telemedicineRoutes);
 
+app.get('/', (req, res) => {
+  res.send('VidaPlus API is running 🚀');
+});
+
 app.use(errorHandler);
 
 export default app;
