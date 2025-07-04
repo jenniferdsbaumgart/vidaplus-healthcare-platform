@@ -50,10 +50,39 @@ export const getAppointmentById = async (req: Request, res: Response, next: Next
   }
 };
 
-export const createAppointment = async (req: Request, res: Response): Promise<void> => {
-  const data = req.body;
-  const newAppointment = await prisma.appointment.create({ data });
-  res.status(201).json(newAppointment);
+export const createAppointment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { patientId, doctorId, date, time, type, status } = req.body;
+
+    const doctor = await prisma.staff.findUnique({
+      where: { id: doctorId },
+    });
+
+    if (!doctor) {
+      res.status(404).json({ message: 'Médico não encontrado.' });
+      return;
+    }
+
+    const newAppointment = await prisma.appointment.create({
+      data: {
+        patient_id: patientId,
+        doctor_id: doctorId,
+        doctor_name: doctor.full_name,
+        date: new Date(date),
+        time,
+        type,
+        status,
+      },
+    });
+
+    res.status(201).json(newAppointment);
+  } catch (error) {
+    console.error('Erro ao criar agendamento:', error);
+    res.status(500).json({ message: 'Erro ao criar agendamento.', error });
+  }
 };
 
 export const updateAppointment = async (req: Request, res: Response): Promise<void> => {
