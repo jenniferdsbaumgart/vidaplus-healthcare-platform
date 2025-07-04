@@ -29,6 +29,8 @@ interface PatientFormProps {
 }
 
 const mapFormDataToCreatePatientInput = (formData: PatientFormData) => {
+  const cleanAddress = formData.address ? formData.address.replace(/,/g, '') : undefined;
+
   return {
     full_name: formData.full_name,
     cpf: formData.cpf,
@@ -36,7 +38,7 @@ const mapFormDataToCreatePatientInput = (formData: PatientFormData) => {
     gender: formData.gender,
     email: formData.email || undefined,
     phone: formData.phone || undefined,
-    address: formData.address || undefined,
+    address: cleanAddress,
   };
 };
 
