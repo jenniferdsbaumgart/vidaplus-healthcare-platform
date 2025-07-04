@@ -15,7 +15,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 app.use(cors({
-  origin: 'https://vidaplus.vercel.app',
+  origin: ["https://vidaplus.vercel.app"],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 app.use(express.json());
