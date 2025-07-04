@@ -1,16 +1,32 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
-import { Search, Video, Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getTeleconsultations, Teleconsultation } from '../../services/telemedicineService';
-import { useAuth } from '../../hooks/useAuth';
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import {
+  Search,
+  Video,
+  Calendar,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import {
+  getTeleconsultations,
+  Teleconsultation,
+} from "../../services/telemedicineService";
+import { useAuth } from "../../hooks/useAuth";
+import { toZonedTime, format } from "date-fns-tz";
 
 const TelemedicinePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [teleconsultations, setTeleconsultations] = useState<Teleconsultation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,25 +38,25 @@ const TelemedicinePage = () => {
         setIsLoading(true);
         let data = await getTeleconsultations();
 
-         // Filtra pelo staffId se for staff (ex: doctor, nurse, technician)
-        if (user?.role && user?.role !== 'admin' && user?.role !== 'patient') {
+        if (user?.role && user?.role !== "admin" && user?.role !== "patient") {
           data = data.filter(
-            (c: Teleconsultation) => Number(c.doctor.id) === Number(user.staffId)
+            (c: Teleconsultation) =>
+              Number(c.doctor.id) === Number(user.staffId)
           );
         }
 
-        // Filtra pelo patientId se for paciente
-        if (user?.role === 'patient' && user?.patientId) {
+        if (user?.role === "patient" && user?.patientId) {
           data = data.filter(
-            (c: Teleconsultation) => Number(c.patient.id) === Number(user.patientId)
+            (c: Teleconsultation) =>
+              Number(c.patient.id) === Number(user.patientId)
           );
         }
 
         setTeleconsultations(data);
         setError(null);
       } catch (err) {
-        console.error('Error loading teleconsultations:', err);
-        setError('Failed to load teleconsultations. Please try again.');
+        console.error("Error loading teleconsultations:", err);
+        setError("Failed to load teleconsultations. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -54,11 +70,14 @@ const TelemedicinePage = () => {
     return cDate.toDateString() === currentDate.toDateString();
   });
 
-  const futureConsultations = teleconsultations.filter((c) => new Date(c.date) > new Date());
-
-  const filteredConsultations = todayConsultations.filter((consultation) =>
-    consultation.patient.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    consultation.doctor?.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredConsultations = todayConsultations.filter(
+    (consultation) =>
+      consultation.patient.full_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      consultation.doctor?.full_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
   );
 
   const goToPreviousDay = () => {
@@ -74,7 +93,11 @@ const TelemedicinePage = () => {
   };
 
   const formatDateForDisplay = (date: Date) =>
-    date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+    date.toLocaleDateString("pt-BR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
 
   const capitalizeFirstLetter = (string: string) =>
     string.charAt(0).toUpperCase() + string.slice(1);
@@ -86,7 +109,8 @@ const TelemedicinePage = () => {
     const birth = new Date(birthDate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) age--;
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate()))
+      age--;
     return age;
   };
 
@@ -128,7 +152,7 @@ const TelemedicinePage = () => {
         <Button
           variant="primary"
           leftIcon={<Calendar className="h-4 w-4" />}
-          onClick={() => navigate('/telemedicine/new')}
+          onClick={() => navigate("/telemedicine/new")}
         >
           Agendar Teleconsulta
         </Button>
@@ -145,8 +169,23 @@ const TelemedicinePage = () => {
 
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
               <div className="flex">
-                <Button variant="outline" size="sm" onClick={goToPreviousDay} leftIcon={<ChevronLeft className="h-4 w-4" />}>Anterior</Button>
-                <Button variant="outline" size="sm" onClick={goToNextDay} rightIcon={<ChevronRight className="h-4 w-4" />} className="ml-2">Próximo</Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToPreviousDay}
+                  leftIcon={<ChevronLeft className="h-4 w-4" />}
+                >
+                  Anterior
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToNextDay}
+                  rightIcon={<ChevronRight className="h-4 w-4" />}
+                  className="ml-2"
+                >
+                  Próximo
+                </Button>
               </div>
 
               <Input
@@ -163,58 +202,82 @@ const TelemedicinePage = () => {
         <CardContent>
           <div className="space-y-4 mt-2">
             {filteredConsultations.length > 0 ? (
-              filteredConsultations.map((consultation) => (
-                <div key={consultation.id} className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center mb-3 md:mb-0">
-                    <div className="relative mr-4">
-                      <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center">
-                        <span className="text-lg font-semibold">
-                          {consultation.patient.full_name.split(' ').map((n) => n[0]).join('')}
-                        </span>
+              filteredConsultations.map((consultation) => {
+                const zonedDate = toZonedTime(new Date(consultation.date), "America/Sao_Paulo");
+
+                return (
+                  <div
+                    key={consultation.id}
+                    className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center mb-3 md:mb-0">
+                      <div className="relative mr-4">
+                        <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center">
+                          <span className="text-lg font-semibold">
+                            {consultation.patient.full_name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center">
+                          <Link
+                            to={`/patients/${consultation.patient.id}`}
+                            className="text-teal-600 hover:text-teal-800 hover:underline text-sm font-medium"
+                          >
+                            {consultation.patient.full_name}
+                          </Link>
+                          <span className="ml-2 text-xs text-gray-500">
+                            {calculateAge(consultation.patient.birth_date)} anos
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {consultation.doctor?.specialization} com{" "}
+                          {consultation.doctor?.full_name}
+                        </p>
                       </div>
                     </div>
-                    <div>
-                      <div className="flex items-center">
-                        <Link to={`/patients/${consultation.patient.id}`} className="text-teal-600 hover:text-teal-800 hover:underline text-sm font-medium">
-                          {consultation.patient.full_name}
-                        </Link>
-                        <span className="ml-2 text-xs text-gray-500">
-                          {calculateAge(consultation.patient.birth_date)} anos
-                        </span>
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full md:w-auto">
+                      <div className="flex items-center text-gray-600 bg-gray-100 px-3 py-1.5 rounded-md text-sm">
+                        <Clock className="h-4 w-4 mr-1" />
+                        <span>{format(zonedDate, "HH:mm")}</span>
+                        <span className="mx-1">•</span>
+                        <span>30 min</span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {consultation.doctor?.specialization} com {consultation.doctor?.full_name}
-                      </p>
+
+                      <Button
+                        variant="primary"
+                        leftIcon={<Video className="h-4 w-4" />}
+                        disabled={!isWithin15Minutes(consultation.date)}
+                        className="w-full sm:w-auto"
+                      >
+                        {isWithin15Minutes(consultation.date)
+                          ? "Iniciar Agora"
+                          : "Iniciar Consulta"}
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full md:w-auto">
-                    <div className="flex items-center text-gray-600 bg-gray-100 px-3 py-1.5 rounded-md text-sm">
-                      <Clock className="h-4 w-4 mr-1" />
-                      <span>{new Date(consultation.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
-                      <span className="mx-1">•</span>
-                      <span>30 min</span>
-                    </div>
-
-                    <Button
-                      variant="primary"
-                      leftIcon={<Video className="h-4 w-4" />}
-                      disabled={!isWithin15Minutes(consultation.date)}
-                      className="w-full sm:w-auto"
-                    >
-                      {isWithin15Minutes(consultation.date) ? 'Iniciar Agora' : 'Iniciar Consulta'}
-                    </Button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <div className="p-3 bg-blue-50 rounded-full mb-4">
                   <Video className="h-10 w-10 text-teal-600" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhuma teleconsulta encontrada</h3>
-                <p className="text-gray-500 max-w-md mb-6">Não há teleconsultas agendadas para este dia.</p>
-                <Button variant="outline" leftIcon={<Calendar className="h-4 w-4" />} onClick={() => navigate('/telemedicine/new')}>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  Nenhuma teleconsulta encontrada
+                </h3>
+                <p className="text-gray-500 max-w-md mb-6">
+                  Não há teleconsultas agendadas para este dia.
+                </p>
+                <Button
+                  variant="outline"
+                  leftIcon={<Calendar className="h-4 w-4" />}
+                  onClick={() => navigate("/telemedicine/new")}
+                >
                   Agendar Nova Teleconsulta
                 </Button>
               </div>
@@ -266,7 +329,7 @@ const TelemedicinePage = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {futureConsultations.slice(0, 3).map((consultation) => (
+            {filteredConsultations.slice(0, 3).map((consultation) => (
               <div key={consultation.id} className="flex items-start p-3 rounded-md border hover:bg-gray-50 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mr-3">
                   <span className="text-sm font-semibold">
@@ -295,7 +358,7 @@ const TelemedicinePage = () => {
                 </div>
               </div>
             ))}
-            {futureConsultations.length === 0 && (
+            {filteredConsultations.length === 0 && (
               <div className="text-center py-6 text-gray-500">Não há teleconsultas futuras agendadas.</div>
             )}
           </div>
