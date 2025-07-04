@@ -8,16 +8,17 @@ export const getAllPatients = async (req: Request, res: Response, next: NextFunc
       include: {
         appointments: {
           include: {
-            doctor: true, // se quiser o nome do médico também
+            doctor: true, 
           },
         },
       },
     });
     res.json(patients);
   } catch (error) {
-    next(error);
+      next(error);
+    }
   }
-};
+
 
 export const getPatientById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -59,14 +60,17 @@ export const getPatientByUserId = async (req: Request, res: Response): Promise<v
 
 export const createPatient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { full_name, cpf, birth_date, gender, email, phone, password } = req.body;
+    const { full_name, cpf, birth_date, gender, email, phone } = req.body;
 
-    if (!full_name || !cpf || !birth_date || !gender || !email || !password) {
+    if (!full_name || !cpf || !birth_date || !gender || !email) {
       return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.create({
+    const provisionalPassword = cpf.replace(/\D/g, '');
+
+    const hashedPassword = await bcrypt.hash(provisionalPassword, 10);
+
+    const createdUser = await prisma.user.create({
       data: {
         name: full_name,
         email,
@@ -82,15 +86,20 @@ export const createPatient = async (req: Request, res: Response, next: NextFunct
         birth_date: new Date(birth_date),
         gender,
         email,
-        phone
+        phone,
+        userId: createdUser.id
       }
     });
 
-    res.status(201).json(patient);
+    res.status(201).json({
+      message: 'Paciente criado com sucesso.',
+      patient,
+      provisionalPassword
+    });
   } catch (error) {
     next(error);
   }
-};
+}
 
 export const updatePatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
