@@ -29,13 +29,8 @@ interface PatientFormProps {
 }
 
 const mapFormDataToCreatePatientInput = (formData: PatientFormData) => {
-  const today = new Date();
-  const birthDate = new Date(formData.birth_date);
-  const age = today.getFullYear() - birthDate.getFullYear();
-
   return {
     full_name: formData.full_name,
-    age,
     cpf: formData.cpf,
     birth_date: new Date(formData.birth_date),
     gender: formData.gender,
