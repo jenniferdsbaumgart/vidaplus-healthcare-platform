@@ -28,7 +28,9 @@ const TelemedicinePage = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [teleconsultations, setTeleconsultations] = useState<Teleconsultation[]>([]);
+  const [teleconsultations, setTeleconsultations] = useState<
+    Teleconsultation[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,9 +67,18 @@ const TelemedicinePage = () => {
     loadTeleconsultations();
   }, [user?.role, user?.staffId, user?.patientId]);
 
+  const timeZone = "America/Sao_Paulo";
+
   const todayConsultations = teleconsultations.filter((c) => {
-    const cDate = new Date(c.date);
-    return cDate.toDateString() === currentDate.toDateString();
+    const cDate = toZonedTime(new Date(c.date), timeZone);
+    const current = toZonedTime(currentDate, timeZone);
+    return cDate.toDateString() === current.toDateString();
+  });
+
+  const futureConsultations = teleconsultations.filter((c) => {
+    const cDate = toZonedTime(new Date(c.date), timeZone);
+    const now = toZonedTime(new Date(), timeZone);
+    return cDate > now;
   });
 
   const filteredConsultations = todayConsultations.filter(
@@ -115,8 +126,8 @@ const TelemedicinePage = () => {
   };
 
   const isWithin15Minutes = (scheduledFor: string) => {
-    const now = new Date();
-    const consultationDate = new Date(scheduledFor);
+    const now = toZonedTime(new Date(), timeZone);
+    const consultationDate = toZonedTime(new Date(scheduledFor), timeZone);
     const timeDiff = (consultationDate.getTime() - now.getTime()) / (1000 * 60);
     return timeDiff >= -15 && timeDiff <= 15;
   };
@@ -203,7 +214,10 @@ const TelemedicinePage = () => {
           <div className="space-y-4 mt-2">
             {filteredConsultations.length > 0 ? (
               filteredConsultations.map((consultation) => {
-                const zonedDate = toZonedTime(new Date(consultation.date), "America/Sao_Paulo");
+                const zonedDate = toZonedTime(
+                  new Date(consultation.date),
+                  "America/Sao_Paulo"
+                );
 
                 return (
                   <div
@@ -285,85 +299,108 @@ const TelemedicinePage = () => {
           </div>
         </CardContent>
       </Card>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-
-      {/* Como Funciona a Telemedicina */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Como Funciona a Telemedicina</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">Preparação para a Consulta</h3>
-            <ul className="text-sm text-blue-800 space-y-2 pl-5 list-disc">
-              <li>Verifique sua conexão com a internet</li>
-              <li>Teste sua câmera e microfone</li>
-              <li>Escolha um local calmo e bem iluminado</li>
-              <li>Tenha em mãos seus documentos e histórico médico</li>
-            </ul>
-          </div>
-          <div className="p-4 bg-green-50 rounded-lg border border-green-100">
-            <h3 className="text-sm font-medium text-green-900 mb-2">Durante a Consulta</h3>
-            <ul className="text-sm text-green-800 space-y-2 pl-5 list-disc">
-              <li>Fale claramente e descreva seus sintomas em detalhes</li>
-              <li>Mostre à câmera qualquer área afetada, se necessário</li>
-              <li>Anote as recomendações do médico</li>
-              <li>Pergunte sobre prescrições e encaminhamentos</li>
-            </ul>
-          </div>
-          <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-            <h3 className="text-sm font-medium text-amber-900 mb-2">Após a Consulta</h3>
-            <ul className="text-sm text-amber-800 space-y-2 pl-5 list-disc">
-              <li>Verifique suas prescrições no sistema</li>
-              <li>Agende exames recomendados</li>
-              <li>Confirme sua próxima consulta, se necessário</li>
-              <li>Avalie a qualidade da teleconsulta</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-      {/* Próximas Teleconsultas */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Próximas Teleconsultas</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {filteredConsultations.slice(0, 3).map((consultation) => (
-              <div key={consultation.id} className="flex items-start p-3 rounded-md border hover:bg-gray-50 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mr-3">
-                  <span className="text-sm font-semibold">
-                    {consultation.patient.full_name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-                <div className="flex-grow">
-                  <div className="flex items-center justify-between">
-                    <Link to={`/patients/${consultation.patient.id}`} className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium">
-                      {consultation.patient.full_name}
-                    </Link>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {new Date(consultation.date).toLocaleDateString('pt-BR')}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Como Funciona a Telemedicina */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Como Funciona a Telemedicina</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <h3 className="text-sm font-medium text-blue-900 mb-2">
+                Preparação para a Consulta
+              </h3>
+              <ul className="text-sm text-blue-800 space-y-2 pl-5 list-disc">
+                <li>Verifique sua conexão com a internet</li>
+                <li>Teste sua câmera e microfone</li>
+                <li>Escolha um local calmo e bem iluminado</li>
+                <li>Tenha em mãos seus documentos e histórico médico</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-green-50 rounded-lg border border-green-100">
+              <h3 className="text-sm font-medium text-green-900 mb-2">
+                Durante a Consulta
+              </h3>
+              <ul className="text-sm text-green-800 space-y-2 pl-5 list-disc">
+                <li>Fale claramente e descreva seus sintomas em detalhes</li>
+                <li>Mostre à câmera qualquer área afetada, se necessário</li>
+                <li>Anote as recomendações do médico</li>
+                <li>Pergunte sobre prescrições e encaminhamentos</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
+              <h3 className="text-sm font-medium text-amber-900 mb-2">
+                Após a Consulta
+              </h3>
+              <ul className="text-sm text-amber-800 space-y-2 pl-5 list-disc">
+                <li>Verifique suas prescrições no sistema</li>
+                <li>Agende exames recomendados</li>
+                <li>Confirme sua próxima consulta, se necessário</li>
+                <li>Avalie a qualidade da teleconsulta</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+        {/* Próximas Teleconsultas */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Próximas Teleconsultas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {futureConsultations.slice(0, 3).map((consultation) => {
+                const zonedFutureDate = toZonedTime(
+                  new Date(consultation.date),
+                  timeZone
+                );
+                return (
+                  <div
+                    key={consultation.id}
+                    className="flex items-start p-3 rounded-md border hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mr-3">
+                      <span className="text-sm font-semibold">
+                        {consultation.patient.full_name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </span>
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex items-center justify-between">
+                        <Link
+                          to={`/patients/${consultation.patient.id}`}
+                          className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium"
+                        >
+                          {consultation.patient.full_name}
+                        </Link>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {format(zonedFutureDate, "dd/MM/yyyy")}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <p className="text-xs text-gray-500">
+                          {consultation.doctor?.specialization} •{" "}
+                          {consultation.doctor?.full_name}
+                        </p>
+                        <div className="flex items-center text-xs text-gray-500">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {format(zonedFutureDate, "HH:mm")}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-xs text-gray-500">
-                      {consultation.doctor?.specialization} • {consultation.doctor?.full_name}
-                    </p>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {new Date(consultation.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </div>
+                );
+              })}
+              {futureConsultations.length === 0 && (
+                <div className="text-center py-6 text-gray-500">
+                  Não há teleconsultas futuras agendadas.
                 </div>
-              </div>
-            ))}
-            {filteredConsultations.length === 0 && (
-              <div className="text-center py-6 text-gray-500">Não há teleconsultas futuras agendadas.</div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
