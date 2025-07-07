@@ -63,7 +63,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       await prisma.staff.create({
         data: {
           userId: createdUser.id,
-          full_name,
+          full_name: role === 'doctor' ? `Dr(a). ${full_name}` : full_name,
           registration_number,
           role,
           specialization,

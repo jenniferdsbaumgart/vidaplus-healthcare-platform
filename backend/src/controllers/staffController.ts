@@ -1,19 +1,26 @@
-import { NextFunction, Request, Response } from 'express';
-import { prisma } from '../lib/prisma';
-import bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from "express";
+import { prisma } from "../lib/prisma";
+import bcrypt from "bcrypt";
 
-export const getAllStaff = async (req: Request, res: Response): Promise<void> => {
+export const getAllStaff = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const staff = await prisma.staff.findMany();
   res.json(staff);
 };
 
-export const getStaffById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getStaffById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const id = Number(req.params.id);
     const staff = await prisma.staff.findUnique({ where: { id } });
 
     if (!staff) {
-      res.status(404).json({ message: 'Staff not found' });
+      res.status(404).json({ message: "Staff not found" });
       return;
     }
 
@@ -23,7 +30,10 @@ export const getStaffById = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const createStaff = async (req: Request, res: Response): Promise<void> => {
+export const createStaff = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const {
     name,
     email,
@@ -39,25 +49,33 @@ export const createStaff = async (req: Request, res: Response): Promise<void> =>
   } = req.body;
 
   try {
-    // Cenário 1: Cadastro com User (registro via /register)
+    const prefixNameIfDoctor = (inputName: string, role: string) => {
+      if (role === "doctor" && !inputName.startsWith("Dr")) {
+        return `Dr(a). ${inputName}`;
+      }
+      return inputName;
+    };
+
     if (name && email && password) {
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) {
-        res.status(409).json({ message: 'E-mail já cadastrado.' });
+        res.status(409).json({ message: "E-mail já cadastrado." });
         return;
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      const prefixedName = prefixNameIfDoctor(name, role);
+
       const newUser = await prisma.user.create({
         data: {
-          name,
+          name: prefixedName,
           email,
           password: hashedPassword,
           role,
           staff: {
             create: {
-              full_name: name,
+              full_name: prefixedName,
               email,
               phone,
               address,
@@ -74,15 +92,15 @@ export const createStaff = async (req: Request, res: Response): Promise<void> =>
       });
 
       res.status(201).json({
-        message: 'Usuário e profissional criados com sucesso.',
+        message: "Usuário e profissional criados com sucesso.",
         staff: newUser.staff,
       });
-
     } else {
-      // Cenário 2: Cadastro direto de staff (painel do admin)
+      const full_name = prefixNameIfDoctor(req.body.full_name, role);
+
       const newStaff = await prisma.staff.create({
         data: {
-          full_name: req.body.full_name,
+          full_name,
           email,
           phone,
           address,
@@ -96,17 +114,20 @@ export const createStaff = async (req: Request, res: Response): Promise<void> =>
       });
 
       res.status(201).json({
-        message: 'Profissional criado com sucesso.',
+        message: "Profissional criado com sucesso.",
         staff: newStaff,
       });
     }
   } catch (error) {
-    console.error('[createStaff] erro:', error);
-    res.status(500).json({ message: 'Erro ao criar profissional.', error });
+    console.error("[createStaff] erro:", error);
+    res.status(500).json({ message: "Erro ao criar profissional.", error });
   }
 };
 
-export const getStaffByUserId = async (req: Request, res: Response): Promise<void> => {
+export const getStaffByUserId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { userId } = req.params;
 
   try {
@@ -125,14 +146,23 @@ export const getStaffByUserId = async (req: Request, res: Response): Promise<voi
   }
 };
 
-export const updateStaff = async (req: Request, res: Response): Promise<void> => {
+export const updateStaff = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   const data = req.body;
-  const updated = await prisma.staff.update({ where: { id: Number(id) }, data });
+  const updated = await prisma.staff.update({
+    where: { id: Number(id) },
+    data,
+  });
   res.json(updated);
 };
 
-export const deleteStaff = async (req: Request, res: Response): Promise<void> => {
+export const deleteStaff = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { id } = req.params;
   await prisma.staff.delete({ where: { id: Number(id) } });
   res.status(204).send();
