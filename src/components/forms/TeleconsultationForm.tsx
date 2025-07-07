@@ -5,6 +5,7 @@ import { teleconsultationSchema } from '../../lib/validations/teleconsultation';
 import { createTeleconsultation } from '../../services/telemedicineService';
 import { getPatients } from '../../services/patientService';
 import { getStaff } from '../../services/staffService';
+import { useAuth } from '../../hooks/useAuth';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import {
@@ -41,6 +42,7 @@ interface TeleconsultationFormProps {
 }
 
 const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps) => {
+  const { user } = useAuth();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,22 +81,27 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
   }, []);
 
   const onSubmit = async (data: TeleconsultationFormData) => {
-    try {
-      await createTeleconsultation({
-        patientId: Number(data.patient_id),
-        doctorId: Number(data.staff_id),
-        date: data.scheduled_for,
-        notes: data.notes?.trim() || undefined,
-      });
-      reset();
-      onSuccess?.();
-    } catch (error) {
-      console.error('Erro ao agendar teleconsulta:', error);
-      if (error instanceof Error) {
-        setError('root', { message: error.message });
-      }
+  if (!user || !user.patientId) {
+    console.error("Usuário não possui patientId vinculado ou não está logado.");
+    return;
+  }
+
+  try {
+    await createTeleconsultation({
+      patientId: user.patientId,
+      doctorId: Number(data.staff_id),
+      date: data.scheduled_for,
+      notes: data.notes?.trim() || undefined,
+    });
+    reset();
+    onSuccess?.();
+  } catch (error) {
+    console.error("Erro ao agendar teleconsulta:", error);
+    if (error instanceof Error) {
+      setError("root", { message: error.message });
     }
-  };
+  }
+};
 
   if (isLoading) {
     return (
@@ -141,25 +148,27 @@ const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps
             </div>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-dark mb-1">
-              Paciente
-            </label>
-            <select
-              className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
-              {...register('patient_id')}
-            >
-              <option value="">Selecione um paciente</option>
-              {patients.map((patient) => (
-                <option key={patient.id} value={patient.id}>
-                  {patient.full_name}
-                </option>
-              ))}
-            </select>
-            {errors.patient_id && (
-              <p className="mt-1 text-sm text-error">{errors.patient_id.message}</p>
-            )}
-          </div>
+          {user?.role !== 'patient' && (
+            <div>
+              <label className="block text-sm font-medium text-neutral-dark mb-1">
+                Paciente
+              </label>
+              <select
+                className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
+                {...register('patient_id')}
+              >
+                <option value="">Selecione um paciente</option>
+                {patients.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.full_name}
+                  </option>
+                ))}
+              </select>
+              {errors.patient_id && (
+                <p className="mt-1 text-sm text-error">{errors.patient_id.message}</p>
+              )}
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-neutral-dark mb-1">
