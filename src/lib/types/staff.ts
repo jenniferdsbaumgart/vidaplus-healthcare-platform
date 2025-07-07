@@ -1,4 +1,3 @@
-// src/types/staff.ts
 export interface StaffData {
   id: number;
   full_name: string;

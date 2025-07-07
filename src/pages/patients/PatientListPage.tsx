@@ -35,20 +35,17 @@ const PatientListPage = () => {
     loadPatients();
   }, []);
   
-  // Filter patients based on search query
   const filteredPatients = patients.filter(patient => 
     patient.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     patient.cpf.includes(searchQuery) ||
     (patient.phone && patient.phone.includes(searchQuery))
   );
   
-  // Pagination
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = filteredPatients.slice(indexOfFirstPatient, indexOfLastPatient);
   const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
   
-  // Calculate age from birth_date
   const calculateAge = (birthDate: string) => {
     const today = new Date();
     const birth = new Date(birthDate);
@@ -159,7 +156,7 @@ const PatientListPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {patient.gender === 'male' ? 'Masculino' : 
-                       patient.gender === 'female' ? 'Feminino' : 'Outro'}
+                      patient.gender === 'female' ? 'Feminino' : 'Outro'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{patient.cpf}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{patient.phone || '-'}</td>

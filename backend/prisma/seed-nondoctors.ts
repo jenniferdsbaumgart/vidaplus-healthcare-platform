@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🧑‍⚕️ Criando staffs não médicos...");
 
-  // Funções de staff não médicos
   type Role = "nurse" | "technician";
   const roles: Role[] = ["nurse", "technician"];
 

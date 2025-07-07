@@ -45,7 +45,7 @@ const NewPrescriptionPage = () => {
       <div className="flex flex-col items-center justify-center">
         <div className="w-[900px] max-w-4xl">
           <PrescriptionForm
-            patientId={patientId}
+            patientId={Number(patientId)}
             onSuccess={handleSuccess}
             onCancel={handleCancel}
           />

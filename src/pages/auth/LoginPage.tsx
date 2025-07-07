@@ -43,7 +43,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo and app name */}
+        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
             <img src="/vidaplus-logo-name.png" alt="Logo VidaPlus" />
@@ -126,7 +126,7 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              {/* Credentials help section */}
+              {/* Credenciais Demo */}
               <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
                 <button
                   type="button"

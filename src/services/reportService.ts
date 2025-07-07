@@ -1,10 +1,7 @@
 import { api } from '../lib/api/axios';
-
-// Define a type for report creation/updating
 export interface ReportInput {
   title: string;
   content: string;
-  // Add other fields as needed
 }
 
 export async function getReports() {

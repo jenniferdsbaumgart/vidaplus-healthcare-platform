@@ -156,9 +156,9 @@ const ReportsPage = () => {
         ))}
       </div>
 
-      {/* Charts Grid */}
+      {/* Grid Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Appointments Chart */}
+        {/* Consultas */}
         <Card>
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
@@ -167,13 +167,12 @@ const ReportsPage = () => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-80 w-full flex items-center justify-center">
-              {/* <Bar data={appointmentsData} options={chartOptions} /> */}
               <AppointmentsChart />
             </div>
           </CardContent>
         </Card>
 
-        {/* Specialties Distribution */}
+        {/* Distribuição dos Especialistas */}
         <Card>
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
@@ -182,13 +181,12 @@ const ReportsPage = () => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-80 w-full flex items-center justify-center">
-              {/* <Pie data={specialtiesData} options={pieChartOptions} /> */}
               <MedicalAreasChart />
             </div>
           </CardContent>
         </Card>
 
-        {/* Occupation */}
+        {/* Ocupação dos Leitos */}
         <Card>
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
@@ -202,7 +200,7 @@ const ReportsPage = () => {
           </CardContent>
         </Card>
 
-        {/* Patient Satisfaction */}
+        {/* Satisfação dos Pacientes */}
         <Card>
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
@@ -216,7 +214,7 @@ const ReportsPage = () => {
           </CardContent>
         </Card>
 
-        {/* Waiting Time */}
+        {/* Tempo de Espera */}
         <Card>
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
@@ -230,7 +228,7 @@ const ReportsPage = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Reports */}
+        {/* Relatórios Recentes */}
         <Card>
           <CardHeader className="border-b">
             <CardTitle>Relatórios Recentes</CardTitle>

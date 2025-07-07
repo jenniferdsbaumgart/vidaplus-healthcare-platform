@@ -12,7 +12,7 @@ const ProfilePage = () => {
       <h2 className="text-2xl font-bold text-gray-900">Meu Perfil</h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left column - Profile info */}
+        {/* Left column - Info Perfil */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
@@ -113,7 +113,7 @@ const ProfilePage = () => {
           </Card>
         </div>
         
-        {/* Right column - Additional settings */}
+        {/* Right column - Configurações Adicionais */}
         <div className="space-y-6">
           <Card>
             <CardHeader>

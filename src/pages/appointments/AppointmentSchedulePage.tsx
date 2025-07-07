@@ -27,7 +27,6 @@ import { createAppointment } from "../../services/appointmentService";
 import { createTeleconsultation } from "../../services/telemedicineService";
 import { useAuth } from "../../hooks/useAuth";
 
-// Mock data for specialties
 const SPECIALTIES = [
   "Clínica Geral",
   "Cardiologia",
@@ -41,13 +40,11 @@ const SPECIALTIES = [
   "Oftalmologia",
 ];
 
-// Mock data for clinic hours
 const CLINIC_HOURS = {
-  start: 8, // 8:00
-  end: 18, // 18:00
+  start: 8,
+  end: 18,
 };
 
-// Generate time slots
 const generateTimeSlots = () => {
   const slots = [];
   for (let hour = CLINIC_HOURS.start; hour < CLINIC_HOURS.end; hour++) {
@@ -90,7 +87,6 @@ const AppointmentSchedulePage = () => {
     loadStaff();
   }, []);
 
-  // Filter doctors by specialty
   const availableDoctors = staff.filter(
     (doctor) =>
       !selectedSpecialty || doctor.specialization === selectedSpecialty
@@ -98,10 +94,8 @@ const AppointmentSchedulePage = () => {
 
   const { user } = useAuth();
 
-  // Get available time slots
   const timeSlots = generateTimeSlots();
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

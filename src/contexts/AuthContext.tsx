@@ -47,11 +47,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       const { token, user } = response.data;
 
-      // Salva token e dados do usuário
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-       // 🚨 Se for doctor, busca staffId
       if (user.role === 'doctor') {
         const staff = await getStaffByUserId(user.id);
         if (staff && staff.id) {

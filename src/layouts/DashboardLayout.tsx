@@ -48,7 +48,7 @@ const DashboardLayout = () => {
 
   
 
-  // Navigation items
+  // Itens Nav
   type NavItem = { name: string; path: string; icon: JSX.Element };
 
   const navItems: NavItem[] = useMemo(() => {
@@ -152,13 +152,11 @@ const DashboardLayout = () => {
     ];
   }, [role]);
 
-  // Get the page title based on current path
   const getPageTitle = () => {
     const currentNav = navItems.find((item) => item.path === location.pathname);
     return currentNav?.name || "Dashboard";
   };
 
-  // Common navigation link styles
   const navLinkClasses = (isActive: boolean) =>
     twMerge(
       "flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all relative",
@@ -169,7 +167,7 @@ const DashboardLayout = () => {
 
   return (
     <div className="min-h-screen bg-teal-900/10">
-      {/* Mobile sidebar overlay */}
+      {/* Mobile Sidebar */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 z-20 bg-gray-900/50 lg:hidden"
@@ -221,7 +219,6 @@ const DashboardLayout = () => {
         <header className="bg-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.08)] z-10 fixed top-0 right-0 left-0 lg:left-64">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
-              {/* Left section with menu and page title */}
               <div className="flex items-center">
                 <button
                   className="p-1 mr-3 rounded-lg text-gray-500 hover:bg-gray-100 lg:hidden"
@@ -234,15 +231,12 @@ const DashboardLayout = () => {
                 </h1>
               </div>
 
-              {/* Right section with notifications and profile */}
               <div className="flex items-center space-x-4">
-                {/* Notifications */}
                 <button className="p-1 rounded-full text-gray-500 hover:bg-gray-100 relative">
                   <BellRing className="h-6 w-6" />
                   <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white" />
                 </button>
 
-                {/* Profile dropdown */}
                 <div className="relative">
                   <button
                     className="flex items-center space-x-2 text-sm focus:outline-none"
@@ -276,7 +270,6 @@ const DashboardLayout = () => {
                     <ChevronDown className="hidden md:block h-4 w-4 text-gray-500" />
                   </button>
 
-                  {/* Dropdown menu */}
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-gray-50 ring-1 ring-black ring-opacity-5 z-50">
                       <div className="py-1" role="none">

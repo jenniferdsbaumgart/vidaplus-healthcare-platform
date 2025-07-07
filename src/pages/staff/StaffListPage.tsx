@@ -38,7 +38,6 @@ const StaffListPage = () => {
     loadStaff();
   }, []);
 
-  // Filter staff based on search query and active filter
   const filteredStaff = staff.filter((member) => {
     const matchesSearch =
       member.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,7 +54,6 @@ const StaffListPage = () => {
     return matchesSearch && matchesFilter;
   });
 
-  // Get unique roles for filtering
   const roles = Array.from(new Set(staff.map((member) => member.role)));
 
   const getRoleDisplay = (role: string) => {

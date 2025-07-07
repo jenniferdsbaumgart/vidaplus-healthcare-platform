@@ -1,10 +1,8 @@
 import { mockPatients, mockStaff } from './data';
 import type { Patient, Staff } from './data';
 
-// Simulate network delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Patient API
 export const getPatients = async (): Promise<Patient[]> => {
   await delay(500);
   return [...mockPatients];
@@ -28,7 +26,6 @@ export const createPatient = async (patient: Omit<Patient, 'id' | 'created_at' |
   return newPatient;
 };
 
-// Staff API
 export const getStaff = async (): Promise<Staff[]> => {
   await delay(500);
   return [...mockStaff];

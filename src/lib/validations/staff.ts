@@ -18,7 +18,7 @@ export const staffSchema = z.object({
 
   birth_date: z.string()
     .optional()
-    .nullable(), // em formato ISO string (ex: '2024-06-28')
+    .nullable(),
 
   gender: z.enum(['male', 'female', 'other'], {
     errorMap: () => ({ message: 'Selecione um gênero válido' }),
@@ -41,7 +41,7 @@ export const staffSchema = z.object({
 
   available_schedule: z.array(z.object({
     day: z.number().min(0).max(6),
-    start: z.string(), // pode validar HH:mm se quiser
+    start: z.string(),
     end: z.string(),
   })).optional().nullable(),
 });

@@ -3,9 +3,9 @@ import * as echarts from "echarts/core";
 import { ScatterChart } from "echarts/charts";
 import { TooltipComponent, TitleComponent, SingleAxisComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
-import { TitleComponentOption } from "echarts/components";  // Importando o tipo correto
-import { SingleAxisComponentOption } from "echarts/components";  // Importando o tipo correto
-import { ScatterSeriesOption } from "echarts/charts";  // Importando o tipo correto
+import { TitleComponentOption } from "echarts/components";
+import { SingleAxisComponentOption } from "echarts/components";
+import { ScatterSeriesOption } from "echarts/charts";
 
 echarts.use([ScatterChart, TooltipComponent, TitleComponent, SingleAxisComponent, CanvasRenderer]);
 
@@ -91,7 +91,6 @@ const PatientWaitingTimeChart: React.FC = () => {
         } as ScatterSeriesOption & { data: number[][] });
       });
 
-      // Preenche os dados
       data.forEach((dataItem) => {
         (series[dataItem[0]].data as number[][]).push([dataItem[1], dataItem[0], dataItem[2]]);
       });

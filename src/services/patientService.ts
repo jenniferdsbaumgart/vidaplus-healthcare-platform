@@ -9,7 +9,6 @@ export interface Patient {
   email?: string;
   phone?: string;
   address?: string;
-  // você pode incluir created_at, updated_at se necessário
 }
 
 export type CreatePatientInput = Omit<Patient, 'id' | 'created_at' | 'updated_at'>;

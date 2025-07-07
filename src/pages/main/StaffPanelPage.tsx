@@ -52,8 +52,7 @@ const StaffPanelPage = () => {
           status: appointment.status,
           date: appointment.date,
         }));
-
-        // 🔍 Filtro por staffId se for doctor
+        
         if (user?.role === "doctor" && user?.staffId) {
             allAppointments = allAppointments.filter(
             (a: Appointment) => Number(a.doctorId) === Number(user.staffId)

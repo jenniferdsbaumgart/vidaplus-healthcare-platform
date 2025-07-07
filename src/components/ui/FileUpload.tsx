@@ -8,7 +8,7 @@ interface FileUploadProps {
   label?: string;
   accept?: string;
   multiple?: boolean;
-  maxSize?: number; // in bytes
+  maxSize?: number;
   error?: string;
   helperText?: string;
   onChange?: (files: File[]) => void;

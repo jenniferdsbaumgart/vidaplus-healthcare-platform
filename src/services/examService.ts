@@ -4,7 +4,6 @@ export interface Exam {
   id?: number;
   name: string;
   date: string;
-  // Add other exam fields as needed
 }
 
 export async function getExams() {

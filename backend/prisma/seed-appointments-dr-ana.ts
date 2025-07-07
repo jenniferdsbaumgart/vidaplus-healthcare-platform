@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🔍 Verificando Dr(a). Ana Beatriz Santos...");
 
-  // Verifica se já existe como staff
   let doctor = await prisma.staff.findFirst({
     where: { full_name: { contains: "Ana Beatriz Santos" } },
   });
@@ -13,7 +12,6 @@ async function main() {
   if (!doctor) {
     console.log("👩‍⚕️ Não encontrada em staff, criando...");
 
-    // Busca o user correspondente
     const user = await prisma.user.findFirst({
       where: { email: "dr.ana@vidaplus.com" },
     });
@@ -23,7 +21,6 @@ async function main() {
       return;
     }
 
-    // Cria o staff vinculado ao user
     doctor = await prisma.staff.create({
       data: {
         full_name: "Dr(a). Ana Beatriz Santos",
@@ -42,7 +39,6 @@ async function main() {
     console.log(`✅ Staff já existe: ${doctor.full_name} (ID: ${doctor.id})`);
   }
 
-  // Busca um paciente qualquer
   const patient = await prisma.patient.findFirst();
   if (!patient) {
     console.log("❌ Nenhum paciente encontrado no banco.");
@@ -51,12 +47,11 @@ async function main() {
 
   console.log(`👤 Paciente encontrado: ${patient.full_name} (ID: ${patient.id})`);
 
-  // Cria appointments e teleconsultations
   const today = new Date();
   for (let i = 0; i < 5; i++) {
     const date = new Date();
     date.setDate(today.getDate() + i);
-    date.setHours(9 + i, 0, 0, 0); // 09:00, 10:00, 11:00
+    date.setHours(9 + i, 0, 0, 0);
 
     const type = i % 2 === 0 ? "Consulta Presencial" : "Teleconsulta";
 

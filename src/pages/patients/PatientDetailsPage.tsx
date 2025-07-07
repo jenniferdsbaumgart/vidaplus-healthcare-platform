@@ -119,7 +119,7 @@ const PatientDetailsPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with back button and patient name */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-4">
           <Link to="/patients">
@@ -162,11 +162,11 @@ const PatientDetailsPage = () => {
         </div>
       </div>
 
-      {/* Main content grid */}
+      {/* Main  grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left column - Patient info */}
+        {/* Left column - Ifo Perfil */}
         <div className="space-y-6">
-          {/* Patient summary card */}
+          {/* Card Sumário */}
           <Card>
             <CardHeader>
               <CardTitle>Informações do Paciente</CardTitle>
@@ -207,7 +207,7 @@ const PatientDetailsPage = () => {
             </CardContent>
           </Card>
 
-          {/* Contact information */}
+          {/* Contato */}
           <Card>
             <CardHeader>
               <CardTitle>Contato</CardTitle>
@@ -246,9 +246,9 @@ const PatientDetailsPage = () => {
           </Card>
         </div>
 
-        {/* Middle column - Medical history */}
+        {/* Middle column - Histórico */}
         <div className="space-y-6">
-          {/* Health issues */}
+          {/* Problemas de Saúde */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle>Condições de Saúde</CardTitle>
@@ -310,7 +310,7 @@ const PatientDetailsPage = () => {
             </CardContent>
           </Card>
 
-          {/* Medications */}
+          {/* Medicações */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle>Medicamentos Atuais</CardTitle>
@@ -324,7 +324,6 @@ const PatientDetailsPage = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {/* Campo para adicionar novo medicamento */}
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -352,7 +351,6 @@ const PatientDetailsPage = () => {
                     Adicionar
                   </Button>
                 </div>
-                {/* Lista de medicamentos */}
                 {medications.length === 0 ? (
                   <div className="flex items-start p-3 rounded-md border">
                     Nenhum medicamento registrado
@@ -384,9 +382,9 @@ const PatientDetailsPage = () => {
           </Card>
         </div>
 
-        {/* Right column - Appointments and actions */}
+        {/* Right column - Consultas e Ações */}
         <div className="space-y-6">
-          {/* Appointments (Consultas) */}
+          {/* Consultas */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle>Consultas</CardTitle>
@@ -423,7 +421,7 @@ const PatientDetailsPage = () => {
               </div>
             </CardContent>
           </Card>
-          {/* Exams */}
+          {/* Exames */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle>Exames Recentes</CardTitle>

@@ -53,7 +53,7 @@ const AppointmentsChart: React.FC = () => {
               totalData[did] <= 0 ? 0 : d / totalData[did]
             ),
             itemStyle: {
-              color: sid === 0 ? "#083F3A" : "#028175", // Cor das barras: verde e azul
+              color: sid === 0 ? "#083F3A" : "#028175",
             },
           };
         }

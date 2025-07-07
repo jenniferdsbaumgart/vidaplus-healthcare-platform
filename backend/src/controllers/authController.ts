@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "sua_chave_secreta_aqui";
 const JWT_EXPIRES_IN = "7d";
 
-// Interface para requests autenticadas
 export interface AuthenticatedRequest extends Request {
   userId: number;
 }

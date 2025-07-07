@@ -26,7 +26,6 @@ ChartJS.register(
   Filler
 );
 
-// Tendência Temporal Chart
 export const TendenciaTemporalChart = () => {
   const data = {
     labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
@@ -72,7 +71,6 @@ export const TendenciaTemporalChart = () => {
   );
 };
 
-// Comparação por Categoria Chart
 export const ComparacaoCategoriaChart = () => {
   const data = {
     labels: ['Clínica Geral', 'Reumatologia', 'Cardiologia', 'Psiquiatria', 'Ginecologia'],

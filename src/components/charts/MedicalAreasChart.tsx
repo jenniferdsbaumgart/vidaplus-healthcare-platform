@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts/core";
-import { PieChart, PieSeriesOption } from "echarts/charts"; // Use PieChart and PieSeriesOption
-import { TooltipComponent, LegendComponent } from "echarts/components"; // Add Tooltip and Legend components
+import { PieChart, PieSeriesOption } from "echarts/charts";
+import { TooltipComponent, LegendComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 
 echarts.use([PieChart, TooltipComponent, LegendComponent, CanvasRenderer]);
