@@ -14,7 +14,7 @@ export interface AuthenticatedRequest extends Request {
 // Registro de usuário
 export const register = async (req: Request, res: Response): Promise<void> => {
   const {
-    userType, // 'patient' ou 'staff'
+    userType,
     full_name,
     cpf,
     birth_date,
@@ -37,7 +37,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Cria o usuário base
     const createdUser = await prisma.user.create({
       data: {
         name: full_name,
@@ -112,6 +111,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       staffId = staff ? staff.id : null;
     }
 
+    let patientId = null;
+    if (user.role === "patient") {
+      const patient = await prisma.patient.findUnique({
+        where: { userId: user.id },
+      });
+      patientId = patient ? patient.id : null;
+    }
+
     res.status(200).json({
       message: "Login bem-sucedido.",
       token,
@@ -121,6 +128,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         email: user.email,
         role: user.role,
         staffId: staffId,
+        patientId: patientId,
       },
     });
   } catch (error) {
