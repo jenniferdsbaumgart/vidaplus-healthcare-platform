@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { teleconsultationSchema } from "../../lib/validations/teleconsultation";
-import { createTeleconsultation } from "../../services/telemedicineService";
-import { getPatients } from "../../services/patientService";
-import { getStaff } from "../../services/staffService";
-import { useAuth } from "../../hooks/useAuth";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { teleconsultationSchema } from '../../lib/validations/teleconsultation';
+import { createTeleconsultation } from '../../services/telemedicineService';
+import { getPatients } from '../../services/patientService';
+import { getStaff } from '../../services/staffService';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
   CardFooter,
-} from "../ui/Card";
-import { Video } from "lucide-react";
+} from '../ui/Card';
+import { Video } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 interface Patient {
   id: number;
@@ -26,7 +26,7 @@ interface Staff {
   id: number;
   full_name: string;
   specialization?: string;
-  role: "doctor" | "nurse" | "technician";
+  role: 'doctor' | 'nurse' | 'technician';
 }
 
 interface TeleconsultationFormData {
@@ -41,10 +41,7 @@ interface TeleconsultationFormProps {
   onCancel?: () => void;
 }
 
-const TeleconsultationForm = ({
-  onSuccess,
-  onCancel,
-}: TeleconsultationFormProps) => {
+const TeleconsultationForm = ({ onSuccess, onCancel }: TeleconsultationFormProps) => {
   const { user } = useAuth();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -70,11 +67,11 @@ const TeleconsultationForm = ({
         ]);
 
         setPatients(patientsData);
-        setStaff(staffData.filter((s: Staff) => s.role === "doctor"));
+        setStaff(staffData.filter((s: Staff) => s.role === 'doctor'));
         setLoadError(null);
       } catch (error) {
-        console.error("Erro ao carregar dados:", error);
-        setLoadError("Erro ao carregar dados. Por favor, tente novamente.");
+        console.error('Erro ao carregar dados:', error);
+        setLoadError('Erro ao carregar dados. Por favor, tente novamente.');
       } finally {
         setIsLoading(false);
       }
@@ -84,33 +81,19 @@ const TeleconsultationForm = ({
   }, []);
 
   const onSubmit = async (data: TeleconsultationFormData) => {
-    if (!user || !user.patientId) {
-      console.error(
-        "Usuário não possui patientId vinculado ou não está logado."
-      );
-      setError("root", {
-        message:
-          "Você não possui um ID de paciente vinculado. Contate o suporte.",
-      });
-      return;
-    }
-
     try {
-      console.log("Agendando teleconsulta para patientId:", user.patientId);
-
       await createTeleconsultation({
-        patientId: user.patientId,
+        patientId: Number(data.patient_id),
         doctorId: Number(data.staff_id),
         date: data.scheduled_for,
         notes: data.notes?.trim() || undefined,
       });
-
       reset();
       onSuccess?.();
     } catch (error) {
-      console.error("Erro ao agendar teleconsulta:", error);
+      console.error('Erro ao agendar teleconsulta:', error);
       if (error instanceof Error) {
-        setError("root", { message: error.message });
+        setError('root', { message: error.message });
       }
     }
   };
@@ -161,27 +144,27 @@ const TeleconsultationForm = ({
           )}
 
           {user?.role !== "patient" && (
-            <div>
-              <label className="block text-sm font-medium text-neutral-dark mb-1">
-                Paciente
-              </label>
-              <select
-                className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
+          <div>
+            <label className="block text-sm font-medium text-neutral-dark mb-1">
+              Paciente
+            </label>
+            <select
+              className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
                 {...register("patient_id")}
-              >
-                <option value="">Selecione um paciente</option>
-                {patients.map((patient) => (
-                  <option key={patient.id} value={patient.id}>
-                    {patient.full_name}
-                  </option>
-                ))}
-              </select>
-              {errors.patient_id && (
+            >
+              <option value="">Selecione um paciente</option>
+              {patients.map((patient) => (
+                <option key={patient.id} value={patient.id}>
+                  {patient.full_name}
+                </option>
+              ))}
+            </select>
+            {errors.patient_id && (
                 <p className="mt-1 text-sm text-error">
                   {errors.patient_id.message}
                 </p>
-              )}
-            </div>
+            )}
+          </div>
           )}
 
           <div>
@@ -190,7 +173,7 @@ const TeleconsultationForm = ({
             </label>
             <select
               className="w-full rounded border-2 border-secondary focus:border-accent focus:ring-2 focus:ring-accent focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark"
-              {...register("staff_id")}
+              {...register('staff_id')}
             >
               <option value="">Selecione um médico</option>
               {staff.map((doctor) => (
@@ -200,9 +183,7 @@ const TeleconsultationForm = ({
               ))}
             </select>
             {errors.staff_id && (
-              <p className="mt-1 text-sm text-error">
-                {errors.staff_id.message}
-              </p>
+              <p className="mt-1 text-sm text-error">{errors.staff_id.message}</p>
             )}
           </div>
 
@@ -210,7 +191,7 @@ const TeleconsultationForm = ({
             label="Data e Hora"
             type="datetime-local"
             error={errors.scheduled_for?.message}
-            {...register("scheduled_for")}
+            {...register('scheduled_for')}
             fullWidth
           />
 
@@ -221,7 +202,7 @@ const TeleconsultationForm = ({
             <textarea
               className="w-full rounded border-2 border-secondary focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:outline-none py-2 px-3 text-sm text-neutral-dark resize-none"
               rows={3}
-              {...register("notes")}
+              {...register('notes')}
             />
             {errors.notes && (
               <p className="mt-1 text-sm text-error">{errors.notes.message}</p>
@@ -241,9 +222,7 @@ const TeleconsultationForm = ({
                   <ul className="list-disc pl-5 space-y-1">
                     <li>O link da videochamada será gerado automaticamente</li>
                     <li>Paciente e médico receberão instruções por e-mail</li>
-                    <li>
-                      Certifique-se de que os dados de contato estão atualizados
-                    </li>
+                    <li>Certifique-se de que os dados de contato estão atualizados</li>
                   </ul>
                 </div>
               </div>
@@ -263,7 +242,11 @@ const TeleconsultationForm = ({
             </Button>
           )}
 
-          <Button type="submit" variant="primary" isLoading={isSubmitting}>
+          <Button
+            type="submit"
+            variant="primary"
+            isLoading={isSubmitting}
+          >
             Agendar Teleconsulta
           </Button>
         </CardFooter>
