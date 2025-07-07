@@ -138,7 +138,7 @@ const AppointmentSchedulePage = () => {
         });
       }
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.error("Erro ao agendar consulta:", err);
       setError("Erro ao agendar consulta. Por favor, tente novamente.");
